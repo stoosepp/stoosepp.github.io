@@ -75,7 +75,7 @@
         var value = context.dataset.data[index];
         if (value == 5 && label == "Project Work") {
           if (index == 0) {
-            finalLabel = "Initial Attempt: 5%";
+            finalLabel = "Warm up: 5%";
           } else if (index == 4) {
             finalLabel = "Peer Review: 5%";
           }
@@ -170,18 +170,36 @@
                   type: "line",
                   mode: "vertical",
                   scaleID: "x-axis-0",
-                  xMin: 3.55,
-                  xMax: 3.55,
+                  xMin: 2.5,
+                  xMax: 2.5,
                   value: 4,
                   borderColor: "red",
                   borderWidth: 2,
                   borderDash: [5, 5],
                   label: {
-                    content: "Feedback Provided",
+                    content: "Instructor Editing & Marking",
                     enabled: true,
                     position: "top",
                     rotation: -90,
-                    xAdjust: -18,
+                    xAdjust: 18,
+                  },
+                },
+                {
+                  type: "line",
+                  mode: "vertical",
+                  scaleID: "x-axis-0",
+                  xMin: 5.5,
+                  xMax: 5.5,
+                  value: 4,
+                  borderColor: "red",
+                  borderWidth: 2,
+                  borderDash: [5, 5],
+                  label: {
+                    content: "Instructor Editing & Marking",
+                    enabled: true,
+                    position: "top",
+                    rotation: -90,
+                    xAdjust: 18,
                   },
                 },
               ],
