@@ -4,8 +4,8 @@ function showWeeklyHours() {
 function showWordCount() {
   embed("wordcount/wordcount.html");
 }
-function random80sVideo() {
-  embed("80smv/random80svideo.html");
+function autoVids() {
+  embed("autovideos/index.html");
 }
 
 function embed(thisURL) {
