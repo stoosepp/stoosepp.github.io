@@ -1,0 +1,234 @@
+<html>
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5/dist/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/1.0.2/chartjs-plugin-annotation.min.js"></script>
+
+    <style>
+      body, html{
+
+  font-family: Arial, Helvetica, sans-serif;
+  padding-top: 10px;
+}
+
+.wrapper{
+  display:block;
+  overflow:hidden;
+  margin:0 auto;
+  padding: 10px 50px;
+  background:#fff;
+  border-radius:3px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+canvas{
+  background:#fff;
+  height:400px;
+}
+
+h1{
+  margin-top:10px;
+  font-weight:200;
+  text-align: center;
+  display: block;
+  text-decoration: none;
+}
+
+.buttonBox{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+.buttonBox button{
+  padding:5px 10px;
+  margin:5px;
+
+}
+#gcelChart{
+  width:800px;
+  height:400px;
+}
+    </style>
+  </head>
+  <body>
+
+    <h1><span id="chartTitle">Recommended Hours of Study</span></h1>
+    <div class="wrapper">
+    <canvas id="gcelChart"></canvas>
+    </div>
+    <div class="buttonBox">
+      <button onclick="toggleData('hours')">Recommended Hours of Study</button>
+      <button onclick="toggleData('distribution')">Mark Distribution</button>
+
+    </div>
+
+    <script>
+      const constToolTipHours = function(context) {
+        var label = context.dataset.label;
+            var index = context.dataIndex;
+            var value = context.dataset.data[index];
+            return label + ': ' + value + ' hrs';
+          }
+
+const constToolTipDist = function(context) {
+            var finalLabel = ''
+            var label = context.dataset.label;
+            var index = context.dataIndex;
+            var value = context.dataset.data[index];
+            if (value == 5 && label == 'Project Work'){
+              if (index == 0){
+                finalLabel = 'Initial Attempt: 5%';
+              }
+              else if (index == 4){
+                finalLabel = 'Peer Review: 5%';
+              }
+
+            }
+            else if (value == 10 && label == 'Project Work'){
+              finalLabel = 'Revision Submission: 10%';
+            }
+            else if (value == 40 && label == 'Project Work'){
+              finalLabel = 'Major Submission: 40%';
+            }
+            else {
+              finalLabel = label + ': ' + value + '%';
+            }
+            return finalLabel;
+        };
+        const yValueCallBackHours = function(value, index, values) {
+                        return value + ' hrs';
+                    };
+      const yValueCallBackDist = function(value, index, values) {
+          return value + '%';
+      };
+
+      const ctx = document.getElementById("gcelChart").getContext('2d');
+      const distributionData = [{
+			label: 'Quiz',
+			backgroundColor: "#caf270",
+			data: [3, 3, 3, 0, 3,3],
+		}, {
+			label: 'Bi-weekly Activity',
+			backgroundColor: "#45c490",
+			data: [5, 5, 5, 0, 5,5],
+		}, {
+			label: 'Project Work',
+			backgroundColor: "#008d93",
+			data: [0, 0, 40, 0, 0,20],
+		}];
+
+    const hoursData = [{
+			label: 'Learning Materials & Research',
+			backgroundColor: "#88DB80",
+			data: [5, 5, 5, 0, 5,5],
+		}, {
+			label: 'Bi-weekly Activity',
+			backgroundColor: "#45c490",
+			data: [5, 5, 5, 0, 5,5],
+		}, {
+			label: 'Live Sessions',
+			backgroundColor: "#17717E",
+			data: [2, 2, 2, 0, 2,2],
+		},
+    {
+    label: 'General Inquiries & Reflection',
+			backgroundColor: "#3A8C7C",
+			data: [3, 3, 3, 0, 3,3],
+		},{
+    label: 'Research, Project Work & Planning',
+			backgroundColor: "#008d93",
+			data: [15, 15, 15, 0, 15,15],
+		},{
+    label: 'Final Wrap-up',
+			backgroundColor: "#CAF270",
+			data: [0, 0, 0, 0, 0,0,1],
+		}];
+
+
+    //Initialize Chart
+var GCELChart = new Chart(ctx, {
+	type: 'bar',
+	data: {
+		labels: ["Weeks 1 & 2","Weeks 3 & 4","Weeks 5 & 6","Weeks 7 & 8","Weeks 9 & 10","Weeks 11 & 12","Week 13"],
+		datasets:hoursData,
+	},
+  options: {
+    plugins: {
+      annotation: {
+        annotations: [
+          {
+            type: "line",
+            mode: "vertical",
+            scaleID: 'x-axis-0',
+            xMin:3.55 ,
+            xMax: 3.55,
+            value: 4,
+            borderColor: "red",
+            borderWidth:2,
+            borderDash:[5,5],
+            label: {
+              content: "Feedback Provided",
+              enabled: true,
+              position: "top",
+              rotation:-90,
+              xAdjust:-18
+            }
+          }
+        ]
+      },
+      legend: { position: 'bottom' },
+      tooltip: {
+            mode: 'nearest',
+            intersect: false,
+            xAlign:'center',
+            yAlign:'center',
+            callbacks: {
+                    label: constToolTipHours
+            }
+        }
+    },
+    responsive: false,
+    scales: {
+      x: {
+        stacked: true,
+        grid:{
+          display:false
+        },
+      },
+      y: {
+        stacked: true,
+        ticks: {
+            beginAtZero: true,
+            callback: yValueCallBackHours
+          },
+          label: "Speed in Miles per Hour",
+      },
+    }
+  }
+  });
+  function toggleData(dataSet){
+        console.log('Toggle Dataset to ' + dataSet);
+        if (dataSet == 'hours'){
+          GCELChart.data.datasets = hoursData;
+          document.getElementById("chartTitle").innerHTML = "Recommended Hours of Study";
+          GCELChart.options.scales.y.ticks.callback = yValueCallBackHours;
+          GCELChart.options.plugins.tooltip.callbacks.label =  constToolTipHours;
+        }
+        else{
+          GCELChart.data.datasets = distributionData;
+          document.getElementById("chartTitle").innerHTML = "Mark Distribution over Time";
+          GCELChart.options.scales.y.ticks.callback = yValueCallBackDist;
+          GCELChart.options.plugins.tooltip.callbacks.label =  constToolTipDist;
+
+        }
+        GCELChart.update();
+      }
+
+
+
+
+
+    </script>
+  </body>
+</html>

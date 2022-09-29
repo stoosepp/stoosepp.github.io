@@ -1,0 +1,164 @@
+<html>
+  <head>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://www.jqueryscript.net/demo/Minimal-jQuery-Any-Date-Countdown-Timer-Plugin-countdown/dest/jquery.countdown.js"></script>
+
+  <script>
+     $(document).ready(function() {
+    //function progress(timeleft, timetotal, $element) {
+    function countdownUntil(dueDate,i,timeLeft) {
+      console.log('Time Left' + timeLeft);
+        let thisDueDate = new Date(dueDate);
+        let days = parseInt(timeLeft / 86400);
+        let hoursLeft = parseInt(timeLeft - days * 86400);
+        let hours = parseInt(hoursLeft / 3600);
+        let minutesLeft = parseInt(hoursLeft - hours * 3600);
+        let minutes = parseInt(minutesLeft / 60);
+        let seconds = parseInt(timeLeft % 60);
+
+        //Add Dots for Assignments
+      let timetotal = (trimesterEnd.getTime() / 1000) - (trimesterStart.getTime() / 1000);
+      var timeLeftForAssignment  = (trimesterEnd.getTime() / 1000) - (thisDueDate.getTime() / 1000);
+
+      let assignmentPosition = $(".progressBar").width() - (timeLeftForAssignment / timetotal * $(".progressBar").width());
+      let assignmentPosition2 = ($(".progressBar").width()+17.5) - (timeLeftForAssignment / timetotal * ($(".progressBar").width() + 20));
+      let finalPosition = assignmentPosition * (assignmentPosition/assignmentPosition2);
+      //adjust assignment position based on padding and position over time
+
+      console.log('Final position is ' + finalPosition);
+      if (finalPosition == 0){
+        finalPosition = 2.5;
+      }
+      console.log(i);
+      $(".progressBar")
+      .append('<div class="dot" style="left:' + finalPosition + '"><span class="number '+ i +'"></span></div>');
+
+
+
+        if (timeLeft < 0){
+          $(".progressBar." + dueDate).addClass("hidden");
+          $(".timeleft." + dueDate).html(`Due Date Passed.`);
+        }
+        else{
+          if (days == 1)
+          {
+            $(".timeleft." + dueDate).html(`${days} day left`);
+          }
+          else{
+            $(".timeleft." + dueDate).html(`${days} days left`);
+          }
+        }
+        $(".number." + i).html(i + 1);
+
+        //THIS IS A TIMER
+        //if (timeLeft > 0)
+        //setTimeout(() => countdownUntil(dueDate,lastDueDate,timeLeft-1), 1000);
+
+
+    }
+
+    // Starting Date
+    const trimesterStart = new Date('2022-02-28');
+
+    // Ending Date
+    const assignmentNameArray = ["Project Submission", "Project Revision"];
+    const dueDateArray = [ "2022-04-11", "2022-05-30"];
+    const trimesterEnd = new Date("2022-06-20");
+
+    // Current Date
+    //let dateNow   = new Date('2022-03-28');
+    let dateNow   = new Date();
+
+    //Add progress through the unit
+    let p = '<div class="progressBar"><div></div></div>';
+    document.body.innerHTML = document.body.innerHTML + p;
+    let timetotal = (trimesterEnd.getTime() / 1000) - (trimesterStart.getTime() / 1000);
+    var progressThroughUnit  = (trimesterEnd.getTime() / 1000) - (dateNow.getTime() / 1000);
+    let progressBarWidth =  $(".progressBar").width() - ((progressThroughUnit / timetotal) * $(".progressBar").width());
+        console.log('Percentage is ' + (progressThroughUnit/timetotal)*100 + '%');
+        $(".progressBar")
+        .find("div")
+        .css('width', progressBarWidth );
+
+    for (var i = 0; i < dueDateArray.length; i++) {
+      let dueDate = dueDateArray[i];
+      let thisDueDate = new Date(dueDate);
+      var timeLeft  = (thisDueDate.getTime() / 1000) - (dateNow.getTime() / 1000);
+      thisDueDate.toLocaleString('en-US', { timeZone: 'America/New_York' });
+        let p = '<p class="label"><strong>' + (i + 1)  +') ' + assignmentNameArray[i] + ': </strong><span class="timeleft ' + dueDate + '"></span></p>';
+        document.body.innerHTML = document.body.innerHTML + p;
+        console.log(timeLeft);
+        countdownUntil(dueDate,i,timeLeft);
+    }
+
+
+
+  });
+    </script>
+  <style>
+    body{
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    .hidden{
+      display:none;
+    }
+    .label{
+      width:90%;
+      margin: auto auto;
+      margin-bottom:0.2em;
+      font-size:0.8em;
+      text-align:center;
+      margin-top:0.5em;
+    }
+.number{
+ color:white;
+ width:15px;
+ height:15px;
+ font-size: 0.8em;
+ text-align: center;
+ position: absolute;
+ right:0px;
+ line-height: 1.2;
+}
+  .progressBar .dot{
+  padding: 0;    /* remove padding */
+  width:15px;
+  height:15px;
+
+  text-align: right;
+  border-radius: 7.5px;
+  background-color:rgba(0, 0, 0, 0.8);
+  position: absolute;
+  top: 2.5px;
+  overflow: visible;
+}
+.progressBar {
+  width: 90%;
+  margin: auto auto;
+  height: 20px;
+  background-color: #eee;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+
+
+}
+.progressBar div {
+   height: 100%;
+   text-align: right;
+   padding: 0;    /* remove padding */
+   line-height: 22px;
+   width: 0;
+   background-color: #5C8A00;
+   box-sizing: border-box;
+   overflow: visible;
+   border-radius: 0.8em;
+
+}
+  </style>
+<body>
+
+
+
+  </body>
+</html>
