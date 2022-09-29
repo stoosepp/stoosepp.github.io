@@ -127,9 +127,13 @@ export function setUpVideos({ forUnit: unit, andTri: trimester }) {
     case "EDIT425":
       videoPlaceHolders = VideoURLs.EDIT425;
       break;
+    case "EDIT518":
+      videoPlaceHolders = VideoURLs.EDIT518;
+      break;
     case "EDIT521":
       videoPlaceHolders = VideoURLs.EDIT521;
       break;
+
     default:
   }
 
