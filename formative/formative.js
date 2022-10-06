@@ -64,11 +64,12 @@ class OptionsContent {
             <h3>How to Complete this Activity</h3>
             <ol>
                 <li>
-                    Go to Canva.com (or another graphic design tool you're comfy with)
+                    Use your favorite design tool. If you're new to this you can try Learn more about how to create infographics
+                    <a href="https://www.canva.com/" target="_blank"> Canva</a> or  <a href="https://piktochart.com/" target="_blank">Piktochart</a>.
                 </li>
                 <li>
-                    Learn more about
-                    <a href="https://www.canva.com/learn/how-to-make-an-infographic/" target="_blank">how to create infographics</a>
+                    Learn more about how to create infographics
+                    <a href="https://www.canva.com/learn/how-to-make-an-infographic/" target="_blank">with Canva</a> or with <a href="https://piktochart.com/formats/infographics/" target="_blank">Piktochart</a>
                 </li>
                 <li>
                     Create an infographic that visually represents a complex idea you learned about in this section of the unit.
