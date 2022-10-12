@@ -61,6 +61,8 @@ function getDateList(startDate, weeklyInterval, trimester) {
   //Add Week 0
   const week0 = new Date(startDate);
   week0.setDate(week0.getDate() - 7);
+  week0.setHours(0, 0, 0, 0);
+
   dateList.push({ week: 0, date: week0 });
   //Add First Week
   dateList.push({ week: 1, date: startDate });
@@ -103,18 +105,22 @@ function getCurrentVideoIndex(forToday, fromDateList) {
     const fromDate = thisDateList[i];
     const toDate = thisDateList[i + 1];
     if (forToday < thisDateList[0]) {
+      //Before Tri Starts
       return 0;
     } else if (forToday > fromDate && forToday < toDate) {
-      console.log(`${fromDate} ... ${toDate}`);
+      //During Tri
+      //console.log(`${fromDate} ... ${toDate}`);
       return i;
     } else if (forToday > thisDateList[thisDateList.length - 1]) {
-      return 7;
+      //After Tri ends
+      return thisDateList.length - 1;
     }
   }
 }
 
 export function setUpVideos({ forUnit: unit, andTri: trimester }) {
   const classStartDate = new Date("2022-10-24"); //Must be in format YYYY-MM-DD
+  classStartDate.setHours(0, 0, 0, 0);
   const today = new Date();
   const dateList = getDateList(classStartDate, 2, "T3");
 

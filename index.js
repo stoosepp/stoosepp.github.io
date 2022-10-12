@@ -7,6 +7,9 @@ function showWordCount() {
 function autoVids() {
   embed("autovideos/index.html");
 }
+function zoomMessages() {
+  embed("whatson/index.html");
+}
 
 function embed(thisURL) {
   container = document.getElementsByClassName("container")[0];
