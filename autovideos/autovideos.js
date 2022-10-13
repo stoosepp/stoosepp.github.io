@@ -1,60 +1,50 @@
 class VideoURLs {
-  static EDIT426 = [
-    "qOVQHOF02bk", //Welcome
-    //"75Z7kif2Jtc", //Week 0
-    "xg4h4aTMAos", //Week 1 & 2
-    "cEbJXv2_GdM", //Week 3 & 4
-    "tyJAJtANDLI", //Week 5 & 6
-    "DGIXT7ce3vQ",
-    "R62iY40QzFs", //Week 9 & 10
-    "f9OQXtD3MzQ", //Week 11 & 12
-    "x0z7J4uwfcI", //Week 13
-  ];
   static EDIT425 = [
     "-A3ENshdsyI", //Welcome
     //"EB3Qe97fSNs", //Week 0
-    "yRoaslCOOsY", //Week 1 & 2
-    "PlKi2FJCKzg", //Week 3 & 4
-    "DvS3q2VDJoQ", //Week 5 & 6
+    "14qnVK60YXM", //Week 1 & 2
+    "NAmeFmSnJqA", //Week 3 & 4
+    "fml5R_r4DLo", //Week 5 & 6
     "DGIXT7ce3vQ",
-    "Dz12w87Q9x4", //Week 9 & 10
-    "2Bu12b74aQU", //Week 11 & 12
-    "MIWzlFJn2Ps", //Week 13
+    "kffeQ3_CLqQ", //Week 9 & 10
+    "yNSs6PKChRI", //Week 11 & 12
+    "3UEbA1D7Y-0", //Week 13
   ];
+  static EDIT426 = [
+    "qOVQHOF02bk", //Welcome
+    //"75Z7kif2Jtc", //Week 0
+    "r_fTa8QmIRQ", //Week 1 & 2
+    "Mt8UdXTMLW0", //Week 3 & 4
+    "HRbNPuBJ-F4", //Week 5 & 6
+    "DGIXT7ce3vQ",
+    "kP9hgtJpW9w", //Week 9 & 10
+    "S9jirJlhP0U", //Week 11 & 12
+    "3UEbA1D7Y-0", //Week 13
+  ];
+
   static EDIT518 = [
     "e_SFRVM-9Hs", //Welcome
     //"rUGDNUxCrn8", //Week 0
-    "hWUMq0lpbXE", //Week 1 & 2
-    "aMQIqKEihKA", //Week 3 & 4
-    "97W7jvlXRWw", //Week 5 & 6
+    "GmKJJ1VDoUE", //Week 1 & 2
+    "4S-dsxI1EnY", //Week 3 & 4
+    "WuFJokLqF1I", //Week 5 & 6
     "DGIXT7ce3vQ",
-    "vJ1OoyawmdU", //Week 9 & 10
-    "uRQ2XDU1z3Y", //Week 11 & 12
-    "_Kon2wKSyoo", //Week 13
+    "A8X_UrMPu5Y", //Week 9 & 10
+    "zBhnWRT8J7M", //Week 11 & 12
+    "3UEbA1D7Y-0", //Week 13
   ];
   static EDIT521 = [
     "Pc0UaFgJivg", //Welcome
     //"XZLSHCIqWTM", //Week 0
-    "ga-lHFJV1GA", //Week 1 & 2
-    "HR2YRM7020w", //Week 3 & 4
-    "gLxcRbhR1Ig", //Week 5 & 6
+    "9wAcxp55Bco", //Week 1 & 2
+    "Q5t1eaLhM18", //Week 3 & 4
+    "o7xXdjoEjlk", //Week 5 & 6
     "DGIXT7ce3vQ",
-    "B9JRxTK6B7E", //Week 9 & 10
-    "K5AzDP9hSF8", //Week 11 & 12
-    "YugFzjazsn4", //Week 13
+    "5H7CMePLyVg", //Week 9 & 10
+    "SB08-lkRmHA", //Week 11 & 12
+    "3UEbA1D7Y-0", //Week 13
   ];
 }
-
-class Events {
-  static whatson = [
-    "Nothing On this Week. Review all the materials an we'll get started next week!",
-    "Questions & Qoffee: ",
-    "Live Session: ",
-    "Nothing going on this Week.",
-  ];
-}
-
-//const today = new Date();
 
 function getDateList(startDate, weeklyInterval, trimester) {
   let dateList = [];
