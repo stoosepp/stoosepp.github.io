@@ -1,6 +1,6 @@
 class VideoURLs {
   static EDIT425 = [
-    "-A3ENshdsyI", //Welcome
+    "lYDw05HIayE", //Welcome
     //"EB3Qe97fSNs", //Week 0
     "14qnVK60YXM", //Week 1 & 2
     "NAmeFmSnJqA", //Week 3 & 4
@@ -11,7 +11,7 @@ class VideoURLs {
     "3UEbA1D7Y-0", //Week 13
   ];
   static EDIT426 = [
-    "qOVQHOF02bk", //Welcome
+    "alhCYDrtgzs", //Welcome
     //"75Z7kif2Jtc", //Week 0
     "r_fTa8QmIRQ", //Week 1 & 2
     "Mt8UdXTMLW0", //Week 3 & 4
@@ -23,7 +23,7 @@ class VideoURLs {
   ];
 
   static EDIT518 = [
-    "e_SFRVM-9Hs", //Welcome
+    "iayVJ8VdHvM", //Welcome
     //"rUGDNUxCrn8", //Week 0
     "GmKJJ1VDoUE", //Week 1 & 2
     "4S-dsxI1EnY", //Week 3 & 4
@@ -34,7 +34,7 @@ class VideoURLs {
     "3UEbA1D7Y-0", //Week 13
   ];
   static EDIT521 = [
-    "Pc0UaFgJivg", //Welcome
+    "e5oJX_jEzD0", //Welcome
     //"XZLSHCIqWTM", //Week 0
     "9wAcxp55Bco", //Week 1 & 2
     "Q5t1eaLhM18", //Week 3 & 4
