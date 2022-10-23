@@ -61,8 +61,9 @@ export function displayWhatsOn({ forTri: trimester }) {
   const classStartDate = new Date("2022-10-24");
   classStartDate.setHours(0, 0, 0, 0);
   //const today = new Date("2022-10-5");//Test Date
-  today.setHours(0, 0, 0, 1);
+
   const today = new Date();
+  today.setHours(0, 0, 0, 1);
   //console.log("Today is  " + today);
   var messages = Events.whatson;
   const dateList = getDateList(classStartDate, "T3");
