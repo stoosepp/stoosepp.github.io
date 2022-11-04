@@ -64,20 +64,20 @@ export function displayWhatsOn({ forTri: trimester }) {
 
   const today = new Date();
   today.setHours(0, 0, 0, 1);
-  //console.log("Today is  " + today);
+  console.log("Today is  " + today);
   var messages = Events.whatson;
   const dateList = getDateList(classStartDate, "T3");
   const thisWeek = getCurrentWeek(today, dateList);
   //console.log("It's Week " + thisWeek);
   var message = "";
-  let heading = `What\'s on Zoom in Week ${thisWeek}:`;
+  let heading = `Week ${thisWeek}: What's on this week?`;
   const result = thisWeek % 2;
 
   if (result == 0) {
-    console.log("Even Week!");
+    //console.log("Even Week!");
     message = messages[1] + "Specific date/time and Zoom Join link below.";
   } else {
-    console.log("Odd Week!");
+    //console.log("Odd Week!");
     message = messages[0] + "Specific date/time and Zoom Join link below.";
   }
   if (thisWeek == 0) {
