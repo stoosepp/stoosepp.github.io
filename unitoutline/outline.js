@@ -17,6 +17,7 @@ export function generateUnitOutline({ forUnit: unit, andTri: trimester }) {
 
   //Deal with different Units
   var unitdesc = "";
+  const tocMenu = StaticContent.stickyMenu;
   const loIntro = StaticContent.outcomesIntro;
   var unitlo = "";
   var unithrlo = "";
@@ -47,6 +48,7 @@ export function generateUnitOutline({ forUnit: unit, andTri: trimester }) {
     default:
     // code block
   }
+  outlineContent += tocMenu;
   outlineContent += introHeader;
   outlineContent += descHeader + unitdesc;
   outlineContent += vizHeader + StaticContent.vizoutline;

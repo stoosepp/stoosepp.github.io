@@ -1,4 +1,6 @@
 export class StaticContent {
+  static stickyMenu =
+    "<nav id='sticky-menu'><h2>Table of Contents</h2><ul><li><a href='#introduction'>Introduction</a></li><li><a href='#assignments'>Assignments</a></li>    <li><a href='#timetable'>Study Timetable</a></li>    <li><a href='#resources'>Learning Resources</a></li>    <li><a href='#academicsupport'>Academic Support</a></li>    <li><a href='#general'>General Information</a></li><li><a href='#copyright'>Authorship, Attribution and Copyright</a></li></ul></nav>";
   static outcomesIntro = "<p>At the end of this unit, you will be able to:</p>";
   static vizoutline =
     "<img src='http://stoosepp.github.io/unitoutline/EDITUnitOverviewOct2022.png' style='width:80%; height:auto; margin-left:10%;' />";
