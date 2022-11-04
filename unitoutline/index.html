@@ -6,8 +6,6 @@
       integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
       crossorigin="anonymous"
     />
-    <link rel="stylesheet" href="../fonts/fontawesome.css" />
-    <link rel="stylesheet" href="../fonts/regular.css" />
     <script type="module">
       import { generateUnitOutline } from "./outline.js";
       generateUnitOutline({ forUnit: "EDIT426", andTri: "T3" });
@@ -16,10 +14,60 @@
       .bootstrap {
         padding: 1em;
       }
+      #unit-outline {
+        margin-right: 200px;
+      }
+      #sticky-menu {
+        position: fixed;
+        top: 0px;
+        right: 0px;
+        width: 200px;
+        background-color: #312b2c;
+        padding-left: 10px;
+        padding-top: 5px;
+      }
+      #sticky-menu h2 {
+        color: white;
+        font-size: 1em;
+      }
+
+      #sticky-menu ul {
+        font-size: 0.8em;
+        padding-inline-start: 0px;
+      }
+      #sticky-menu ul a {
+        text-decoration: none;
+        color: white;
+      }
+      #sticky-menu ul a:hover {
+        text-decoration: underline;
+      }
+      #sticky-menu ul li {
+        display: block;
+        margin-right: 5px;
+        padding-right: 5px;
+        border-right: 1.5px solid lightgray;
+      }
+      #sticky-menu ul li:last-child {
+        margin-right: 0px;
+        border-right: none;
+      }
     </style>
   </head>
 
   <body>
+    <nav id="sticky-menu">
+      <h2>Table of Contents</h2>
+      <ul>
+        <li><a href="#introduction">Introduction</a></li>
+        <li><a href="#assignments">Assignments</a></li>
+        <li>Study Timetable</li>
+        <li><a href="#resources">Learning Resources</a></li>
+        <li><a href="#academicsupport">Academic Support</a></li>
+        <li><a href="#general">General Information</a></li>
+        <li><a href="#copyright">Authorship, Attribution and Copyright</a></li>
+      </ul>
+    </nav>
     <div id="unit-outline"></div>
   </body>
 </html>

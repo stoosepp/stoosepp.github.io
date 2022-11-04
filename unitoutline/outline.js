@@ -55,7 +55,12 @@ export function generateUnitOutline({ forUnit: unit, andTri: trimester }) {
   outlineContent += hrloHeader + unithrlo;
 
   //Academic Support
-  const acsupportHeader = "<h2 id='academicsupport'>AcademicSupport</h2>";
+  const resourcesHeader = "<h2 id='resources'>Readings and Resources</h2>";
+  const resources = StaticContent.resources;
+  outlineContent += resourcesHeader + resources;
+
+  //Academic Support
+  const acsupportHeader = "<h2 id='academicsupport'>Academic Support</h2>";
   const academicSupport = StaticContent.academicSupport;
   outlineContent += acsupportHeader + academicSupport;
 
@@ -65,5 +70,7 @@ export function generateUnitOutline({ forUnit: unit, andTri: trimester }) {
 
   const copyrightHeader = "<h2 id='copyright'>Copyright</h2>";
   const copyright = "Authorship, Attributions & Copyright";
+  outlineContent += copyrightHeader + copyright;
+
   document.getElementById("unit-outline").innerHTML = outlineContent;
 }
