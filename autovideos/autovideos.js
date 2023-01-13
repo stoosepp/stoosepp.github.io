@@ -1,4 +1,15 @@
 class VideoURLs {
+  static EDIT415 = [
+    "X", //Welcome
+    //"EB3Qe97fSNs", //Week 0
+    "X", //Week 1 & 2
+    "X", //Week 3 & 4
+    "X", //Week 5 & 6
+    "X",
+    "X", //Week 9 & 10
+    "X", //Week 11 & 12
+    "X", //Week 13
+  ];
   static EDIT425 = [
     "lYDw05HIayE", //Welcome
     //"EB3Qe97fSNs", //Week 0
@@ -117,11 +128,20 @@ export function setUpVideos({ forUnit: unit, andTri: trimester }) {
   //Load up video URLs from static Class.
   var videoPlaceHolders = [];
   switch (unit) {
-    case "EDIT426":
-      videoPlaceHolders = VideoURLs.EDIT426;
+    case "EDIT415":
+      videoPlaceHolders = VideoURLs.EDIT415;
       break;
     case "EDIT425":
       videoPlaceHolders = VideoURLs.EDIT425;
+      break;
+    case "EDIT426":
+      videoPlaceHolders = VideoURLs.EDIT426;
+      break;
+    case "EDIT513":
+      videoPlaceHolders = VideoURLs.EDIT513;
+      break;
+    case "EDIT517":
+      videoPlaceHolders = VideoURLs.EDIT517;
       break;
     case "EDIT518":
       videoPlaceHolders = VideoURLs.EDIT518;
@@ -132,6 +152,7 @@ export function setUpVideos({ forUnit: unit, andTri: trimester }) {
 
     default:
   }
+  //const videoList = getVideosFor();
 
   //get Index of Current Video
   const index = getCurrentVideoIndex(today, dateList);
@@ -140,3 +161,13 @@ export function setUpVideos({ forUnit: unit, andTri: trimester }) {
     videoPlaceHolders[index] +
     '"title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
 }
+
+// async function getVideosFor() {
+//   fetch("../data.json")
+//     .then((res) => res.json()) // the .json() method parses the JSON response into a JS object literal
+//     .then((data) => {
+//       console.log(data.videos);
+//       console.log(data.videos.EDIT425);
+//       //return data.videos;
+//     });
+// }

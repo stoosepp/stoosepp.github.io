@@ -10,6 +10,9 @@ function autoVids() {
 function zoomMessages() {
   embed("whatson/index.html");
 }
+function whatif() {
+  embed("whatifmarks/index.html");
+}
 
 function embed(thisURL) {
   container = document.getElementsByClassName("container")[0];

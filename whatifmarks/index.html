@@ -1,0 +1,128 @@
+<html>
+  <head>
+    <script src="whatifmarks.js"></script>
+    <style>
+   body {
+  font-family: system-ui;
+  text-align: center;
+}
+h2{
+  margin:0px;
+}
+#container{
+  width:50%;
+  margin-left:25%;
+}
+.row{
+  display:flex;
+  flex-direction:row;
+  justify-content:center;
+  align-items:center;
+  padding-top:0.75em;
+  padding-bottom:0.75em;
+  margin:0.2em;
+}
+
+.grandtotal{
+  background-color: #aec6cf;
+  padding:1em;
+  border-radius:1em;
+}
+
+.pass{
+  background-color: #77dd77;
+}
+.fail{
+  background-color:#bae1ff ;
+}
+
+.row > div{
+  margin-right:10px;
+}
+
+.row > div:first-of-type{
+  margin-right:50px;
+}
+.row>div>h2{
+  text-align:left;
+}
+
+.label{
+  padding-bottom:0.5em;
+  text-align: left;
+
+}
+.column{
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  margin-right:20px;
+}
+
+.percentageLabel{
+  text-align:right;
+  font-size:1.2em;
+  border-style:none;
+  border-bottom: 1px solid lightslategray;
+  width:37px;
+  background-color:white;
+}
+
+
+.infoSource{
+  font-size:0.8em;
+  color:rgb(0.7,0.7,0.7,0.5);
+}
+    </style>
+  </head>
+  <body>
+
+    <h1>'What if?' Marks Calculator</h1>
+    <p>Use this calculator to determine your future marks. Input the point score for each item, and it will calculate everything for you. Feel free to put in hypothetical values to see what your mark would be *IF* you got that score.</p>
+<div id="container">
+
+    <h2 class="grandtotal">Total Mark for Unit: <span id="totalmarkpercentage">0</span>% <span id="totalmarkletter">Uncalculated</span></h2>
+
+    <div class="row">
+      <div class="column">
+        <h3>Project:  (<span id="projecttotal">0</span>% of 60%)</h3>
+      <div class="label" for="fname">Project Submission (30pts): <input type="text" class="percentageLabel submission" id="week12colaborative"value="0">pts</input></div>
+      <div class="label" for="fname">Project Revision (20pts): <input type="text" class="percentageLabel revision" id="week34colaborative"value="0">pts</input></div>
+    </div>
+    </div>
+
+<!-- Formative -->
+<div class="row">
+      <div class="column">
+
+
+        <h3>Formative:  (<span id="formativetotal">0</span>% of 15%)</h3>
+        <div class="label" for="fname">Week 1 & 2 (10pts): <input type="text" class="percentageLabel formative" id="week12formative"value="0">pts</input></div>
+        <div class="label" for="fname">Week 3 & 4 (10pts): <input type="text" class="percentageLabel formative" id="week34formative"value="0">pts</input></div>
+        <div class="label" for="fname">Week 5 & 6 (10pts): <input type="text" class="percentageLabel formative" id="week56formative"value="0">pts</input></div>
+        <div class="label" for="fname">Week 9 & 10 (10pts): <input type="text" class="percentageLabel formative" id="week910formative"value="0">pts</input></div>
+        <div class="label" for="fname">Week 11 & 12 (10pts): <input type="text" class="percentageLabel formative" id="week1112formative"value="0">pts</input></div>
+
+    </div>
+
+      <!-- Collaborative -->
+      <div class="column">
+
+          <h3>Collaborative:  (<span id="collaborativetotal">0</span>% of 25%)</h3>
+        <div class="label" for="fname">Week 1 & 2 (10pts): <input type="text" class="percentageLabel collaborative" id="week12colaborative"value="0">pts</input></div>
+        <div class="label" for="fname">Week 3 & 4 (10pts): <input type="text" class="percentageLabel collaborative" id="week34colaborative"value="0">pts</input></div>
+        <div class="label" for="fname">Week 5 & 6 (10pts): <input type="text" class="percentageLabel collaborative" id="week56colaborative"value="0">pts</input></div>
+        <div class="label" for="fname">Week 9 & 10 (10pts): <input type="text" class="percentageLabel collaborative" id="week910colaborative"value="0">pts</input></div>
+        <div class="label" for="fname">Week 11 & 12 (10pts): <input type="text" class="percentageLabel collaborative" id="week1112colaborative"value="0">pts</input>
+
+
+      </div>
+      </div>
+      </div>
+    <!-- Rounded switch -->
+
+
+    <p class="infoSource">Based upon UNE's <a href="https://policies.une.edu.au/download.php?id=513&version=1&associated" target="_blank">Grading System</a> document</p>
+
+  </body>
+</html>
