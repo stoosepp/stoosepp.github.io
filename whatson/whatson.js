@@ -57,8 +57,11 @@ function getCurrentWeek(forToday, fromDateList) {
     }
   }
 }
-export function displayWhatsOn({ forTri: trimester }) {
-  const classStartDate = new Date("2022-10-24");
+export function displayWhatsOn({
+  forStartDate: theStartDate,
+  forTri: trimester,
+}) {
+  const classStartDate = new Date(theStartDate);
   classStartDate.setHours(0, 0, 0, 0);
   //const today = new Date("2022-10-5");//Test Date
 
