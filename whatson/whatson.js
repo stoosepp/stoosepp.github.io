@@ -2,7 +2,7 @@ class Events {
   static whatson = [
     "Questions & Qoffee: ",
     "Live Session: ",
-    "Nothing On this Week. Review all the materials in the Unit Information and Week 0 sections and we'll get started next week!",
+    "Nothing On this Week. Review all the materials in the Unit Information and Week 0 section and we'll get started next week!",
     "Nothing going on this Week.",
     "Final Questions & Coffee Wrap up session! Check for details below.",
   ];
