@@ -1,14 +1,14 @@
 class VideoURLs {
   static EDIT415 = [
-    "X", //Welcome
+    "rBWThyNIaCo", //Welcome
     //"EB3Qe97fSNs", //Week 0
-    "X", //Week 1 & 2
-    "X", //Week 3 & 4
-    "X", //Week 5 & 6
-    "X",
-    "X", //Week 9 & 10
-    "X", //Week 11 & 12
-    "X", //Week 13
+    "62E7uN-JpVQ", //Week 1 & 2
+    "HeOTSF4_-Es", //Week 3 & 4
+    "nbPbzy1Uaws", //Week 5 & 6
+    "DGIXT7ce3vQ",
+    "hDQsbAbt2QU", //Week 9 & 10
+    "qcU_i2rTmM8", //Week 11 & 12
+    "3UEbA1D7Y-0", //Week 13
   ];
   static EDIT425 = [
     "lYDw05HIayE", //Welcome
