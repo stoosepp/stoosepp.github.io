@@ -119,8 +119,12 @@ function getCurrentVideoIndex(forToday, fromDateList) {
   }
 }
 
-export function setUpVideos({ forUnit: unit, andTri: trimester }) {
-  const classStartDate = new Date("2022-10-24"); //Must be in format YYYY-MM-DD
+export function setUpVideos({
+  forUnit: unit,
+  startDate: theStartDate,
+  andTri: trimester,
+}) {
+  const classStartDate = new Date(theStartDate); //Must be in format YYYY-MM-DD
   classStartDate.setHours(0, 0, 0, 0);
   const today = new Date();
   const dateList = getDateList(classStartDate, 2, "T3");
