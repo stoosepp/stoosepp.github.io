@@ -102,8 +102,7 @@ class OptionsContent {
         <strong>Your Post: </strong>Share your creation in this forum by clicking on <strong>Add a new discussion topic</strong> - this may involve embedding, uploading an image or linking to a video.
     </p>
     <div class="attostylesbox attostylesbox--solid attostylesbox--callout">
-        It would be great to add your materials to the chapter for this section of the unit as supplementary readings so other students can enjoy them! If you're ok sharing, just say so in your post, whether you'd like your name attached or not, and which name
-        you'd like to be credited as.
+        Your creations might be really beneficial for future learners, so in the spirity of open sharing of knowledge instructor may add your creation to the provided online textbooks as a study resource. If you'd prefer NOT to have your work be shared, just say so in your post.
     </div>
     <p>
         <strong>Response:</strong>&nbsp;Feel free to ask any questions you may have (optional - you mark for this task is only for the review)
