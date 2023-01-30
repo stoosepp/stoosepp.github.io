@@ -16,8 +16,8 @@ window.addEventListener("load", (event) => {
       console.log("Value is not a number");
     } else {
       if (input.classList.contains("formative")) {
-        if (input.value > 10) {
-          input.value = 10;
+        if (input.value > 5) {
+          input.value = 5;
         }
       } else if (input.classList.contains("collaborative")) {
         if (input.value > 10) {
@@ -36,7 +36,8 @@ window.addEventListener("load", (event) => {
 
     const inputs = document.getElementsByClassName("percentageLabel");
 
-    var projectPoints = 0;
+    var projectSubPoints = 0;
+    var projectRevPoints = 0;
     var formativePoints = 0;
     var collaborativePoints = 0;
 
@@ -53,27 +54,38 @@ window.addEventListener("load", (event) => {
         ).toFixed(0);
       }
       if (thisInput.classList.contains("submission")) {
-        projectPoints = (
-          parseFloat(thisInput.value) + parseFloat(projectPoints)
+        projectSubPoints = (
+          parseFloat(thisInput.value) + parseFloat(projectSubPoints)
         ).toFixed(0);
       }
       if (thisInput.classList.contains("revision")) {
-        projectPoints = (
-          parseFloat(thisInput.value) + parseFloat(projectPoints)
+        projectRevPoints = (
+          parseFloat(thisInput.value) + parseFloat(projectRevPoints)
         ).toFixed(0);
       }
     });
-    displayTotal(formativePoints, collaborativePoints, projectPoints);
+    displayTotal(
+      formativePoints,
+      collaborativePoints,
+      projectSubPoints,
+      projectRevPoints
+    );
   }
 
-  function displayTotal(formativePoints, collaborativePoints, projectPoints) {
+  function displayTotal(
+    formativePoints,
+    collaborativePoints,
+    projectSubPoints,
+    projectRevPoints
+  ) {
     console.log("Formative: " + formativePoints);
     console.log("Collaborative: " + collaborativePoints);
-    console.log("Project: " + projectPoints);
+    console.log("Project Submission: " + projectSubPoints);
+    console.log("Project Revision: " + projectRevPoints);
 
     //Formative
     formative = document.getElementById("formativetotal");
-    formativePercentage = parseFloat((15 * formativePoints) / 50);
+    formativePercentage = parseFloat((15 * formativePoints) / 25);
     if (formativePercentage % 1 != 0) {
       formative.textContent = formativePercentage.toFixed(2);
     } else {
@@ -91,7 +103,9 @@ window.addEventListener("load", (event) => {
 
     //Project
     project = document.getElementById("projecttotal");
-    projectPercentage = parseFloat((60 * projectPoints) / 50);
+    projectPercentage =
+      parseFloat((40 * projectSubPoints) / 30) +
+      parseFloat((20 * projectRevPoints) / 20);
     if (projectPercentage % 1 != 0) {
       project.textContent = projectPercentage.toFixed(2);
     } else {
