@@ -100,7 +100,7 @@ function getCurrentVideoIndex(forToday, fromDateList) {
   var thisDateList = fromDateList.map(function (item) {
     return item.date;
   });
-  //console.log(thisDateList);
+  console.log(thisDateList);
 
   for (let i = 0; i < thisDateList.length; i++) {
     const fromDate = thisDateList[i];
@@ -114,6 +114,7 @@ function getCurrentVideoIndex(forToday, fromDateList) {
       return i;
     } else if (forToday > thisDateList[thisDateList.length - 1]) {
       //After Tri ends
+      console.log("Tri is over" + thisDateList.length);
       return thisDateList.length - 1;
     }
   }
@@ -159,7 +160,12 @@ export function setUpVideos({
   //const videoList = getVideosFor();
 
   //get Index of Current Video
-  const index = getCurrentVideoIndex(today, dateList);
+  var index = getCurrentVideoIndex(today, dateList);
+  if (index == 8) {
+    console.log("Past week 13");
+    index = 7;
+  }
+  console.log("Index: " + index);
   document.getElementsByClassName("embed-container")[0].innerHTML =
     '<iframe src="https://www.youtube.com/embed/' +
     videoPlaceHolders[index] +

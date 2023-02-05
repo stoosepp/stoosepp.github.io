@@ -91,6 +91,9 @@ export function displayWhatsOn({
     message = messages[3];
   } else if (thisWeek == 13) {
     message = messages[4];
+  } else if (thisWeek > 13) {
+    heading = "Teaching has ended for this Trimester";
+    message = "";
   }
 
   document.getElementById("heading").innerHTML = heading;
