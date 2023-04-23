@@ -79,7 +79,7 @@ function getDateList(startDate, weeklyInterval, trimester) {
     thisDate.setDate(week0.getDate() + currentWeek * 7);
 
     if (trimester == "T3" && currentWeek >= 9) {
-      //console.log("It's Tri 3! Skipping the holidays");
+      console.log("It's Tri 3! Skipping the holidays");
       thisDate.setDate(thisDate.getDate() + 14);
     }
     dateList.push({ week: currentWeek, date: thisDate });
@@ -128,7 +128,7 @@ export function setUpVideos({
   const classStartDate = new Date(theStartDate); //Must be in format YYYY-MM-DD
   classStartDate.setHours(0, 0, 0, 0);
   const today = new Date();
-  const dateList = getDateList(classStartDate, 2, "T3");
+  const dateList = getDateList(classStartDate, 2, trimester);
 
   //Load up video URLs from static Class.
   var videoPlaceHolders = [];

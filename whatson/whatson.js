@@ -69,7 +69,7 @@ export function displayWhatsOn({
   today.setHours(0, 0, 0, 1);
   console.log("Today is  " + today);
   var messages = Events.whatson;
-  const dateList = getDateList(classStartDate, "T3");
+  const dateList = getDateList(classStartDate, trimester);
   const thisWeek = getCurrentWeek(today, dateList);
   //console.log("It's Week " + thisWeek);
   var message = "";
