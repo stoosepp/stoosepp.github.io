@@ -3,6 +3,7 @@ class Events {
     "Questions & Qoffee: ",
     "Live Session: ",
     "Nothing On this Week. Review all the materials in the Unit Information and Week 0 section and we'll get started next week!",
+    "Remember to Complete the Unit Outline Quiz to unlock the rest of the unit!",
     "Nothing going on this Week.",
     "Final Questions & Qoffee Wrap up session! Check for details below.",
   ];
@@ -85,12 +86,14 @@ export function displayWhatsOn({
   }
   if (thisWeek == 0) {
     heading = "It's Zero Week!";
-    message = messages[2];
+    message = messages[2] + messages[3];
+  } else if (thisWeek == 1) {
+    message = message + messages[3];
   } else if (thisWeek == 7 || thisWeek == 8) {
     heading = "Assessment & Intensive Period";
-    message = messages[3];
-  } else if (thisWeek == 13) {
     message = messages[4];
+  } else if (thisWeek == 13) {
+    message = messages[5];
   } else if (thisWeek > 13) {
     heading = "Teaching has ended for this Trimester";
     message = "";
