@@ -33,7 +33,7 @@ class VideoURLs {
     "3UEbA1D7Y-0", //Week 13
   ];
   static EDIT513 = [
-    "m1OwTkFGlgc", //Welcome
+    "m1OwTkFGlgc", //Welcome (Actually Week 0 for this unit)
     //"rUGDNUxCrn8", //Week 0
     "ebk880UKai8", //Week 1 & 2
     "7LUDYfhahUw", //Week 3 & 4
@@ -44,7 +44,7 @@ class VideoURLs {
     "3UEbA1D7Y-0", //Week 13
   ];
   static EDIT517 = [
-    "BcormZe1joc", //Welcome
+    "BcormZe1joc", //Welcome (Actually Week 0 for this unit)
     //"rUGDNUxCrn8", //Week 0
     "nin_fE3wWfI", //Week 1 & 2
     "jk3y-5ykQ2E", //Week 3 & 4
@@ -54,7 +54,6 @@ class VideoURLs {
     "p6yJEE5Kcf8", //Week 11 & 12
     "3UEbA1D7Y-0", //Week 13
   ];
-
   static EDIT518 = [
     "iayVJ8VdHvM", //Welcome
     //"rUGDNUxCrn8", //Week 0
