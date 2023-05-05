@@ -86,7 +86,7 @@ export function displayWhatsOn({
   }
   if (thisWeek == 0) {
     heading = "It's Zero Week!";
-    message = messages[2] + messages[3];
+    message = messages[2] + " " + messages[3];
   } else if (thisWeek == 1) {
     message = message + messages[3];
   } else if (thisWeek == 7 || thisWeek == 8) {
