@@ -1,0 +1,68 @@
+body {
+  margin: 0.5em;
+  padding: 0.5em;
+}
+.instructions {
+  text-align: center;
+}
+
+#log {
+  border: 1px solid #ccc;
+  height: 100px;
+  width: 600px;
+  overflow: scroll;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.tracking {
+  width: 600px;
+  height: 400px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.tracking img {
+  height: 100%;
+}
+.tracking .fullscreen img {
+  height: 100%;
+}
+#canvas-div img {
+  width: 100%;
+  height: auto;
+}
+/*
+.mouse {
+  background-color: red;
+}
+
+.tablet {
+  background-color: red;
+}
+*/
+.hidden {
+  display: none !important;
+}
+
+#canvas-div {
+  margin-left: auto;
+  margin-right: auto;
+}
+#playpause-button {
+  width: 20%;
+}
+.container {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: repeat(3, 1fr);
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+}
+
+.btn {
+  display: grid;
+  align-items: center;
+  justify-items: center;
+}

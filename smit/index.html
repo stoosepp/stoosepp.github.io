@@ -1,0 +1,77 @@
+<html>
+  <head>
+    <title>Capturing On-screen Interactions</title>
+    <script>
+      window.onload = function () {
+        var tag = document.createElement("script");
+        tag.src = "basicinteractions.js";
+        document.getElementsByTagName("head")[0].appendChild(tag);
+        var tag2 = document.createElement("script");
+        tag2.src = "qualtricscapture.js";
+        document.getElementsByTagName("head")[0].appendChild(tag2);
+      };
+      function startCapture() {
+        doTimer();
+        // openFullScreen();
+      }
+    </script>
+
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+  </head>
+
+  <body>
+    <p class="instructions">
+      Hi there, it looks like you're using a
+      <span id="deviceAlert">generic device.</span><br />
+      Click the 'Start Tracking' button below then
+      <span id="interactionType">Mouse</span> around this image.
+    </p>
+    <button type="button" onclick="getResolution();">Get Resolution</button>
+    <button type="button" onclick="openFullScreen();">Full Screen</button>
+    <p><span id="screenres">Screen resolution: Unknown</span></p>
+    <div class="image-div"></div>
+
+    <div class="tracking mouse">
+      <img id="tracked-media" src="Synapse2023PNG.png" />
+    </div>
+    <pre id="log">LOG:</pre>
+    <button
+      id="start-button"
+      type="button"
+      class="btn btn-success"
+      onclick="startCapture()"
+    >
+      Start Tracking
+    </button>
+    <button
+      id="stop-button"
+      type="button"
+      class="btn btn-danger hidden"
+      onclick="stopTimer();"
+    >
+      Stop Tracking
+    </button>
+    <button
+      id="results-button"
+      type="button"
+      class="btn btn-info hidden"
+      onclick="viewResults();"
+    >
+      Show Analytics
+    </button>
+    <br />
+    <button
+      type="button"
+      class="btn btn-secondary"
+      onclick="clearlocalStorage()"
+    >
+      Clear localStorage
+    </button>
+  </body>
+</html>

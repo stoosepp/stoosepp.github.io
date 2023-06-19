@@ -1,0 +1,34 @@
+<html>
+    <head>
+<title>Showing on-screen interactions</title>
+      <script src="https://cdn.jsdelivr.net/npm/p5@1.5.0/lib/p5.js"></script>
+      <script src="qualtricsanalysis.js"></script>
+      <link rel="stylesheet" href="style.css">
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    </head>
+  <body>
+    <div id="canvas-div">
+<!-- This is where the P5 canvas is drawn -->
+    </div>
+    <div class="label hidden" for="fname">Div width: <input type="text" class="div-details hidden" id="div-width" value="0"> pixels.</input></div>
+    <div class="label hidden" for="fname">Div height: <input type="text" class="div-details hidden" id="div-height" value="0"> pixels.</input></div>
+    <div class="label hidden" for="fname">Div Colour: <input type="text" class="div-details hidden" id="div-color" value="0"></input></div>
+
+    <textarea class="hidden" id="xPos" rows="4" cols="50">Paste your xPos Data here</textarea>
+    <textarea class="hidden" id="yPos" rows="4" cols="50">Paste your yPos Data here</textarea>
+    <textarea class="hidden" id="timeStamp" rows="4" cols="50">Paste your timeStamp Data here</textarea>
+    <br/>
+
+<div class="container">
+        <button type="button" id="playpause-button" class="btn btn-primary" onclick="playButtonPressed()">Play</button>
+        <p>Time: <span id="current-time-label">0.00s</span></p>
+
+
+      <input type="range" id="playback-scrubber" value ="0" name="vol" min="0" max="100" oninput="scrubPlayback(this.value)">
+
+    <button type="button" id="back-button" class="btn btn-secondary" onclick="window.location.href='/smit';">< Back to Tracker</button>
+
+  </div>
+
+  </body>
+</html>
