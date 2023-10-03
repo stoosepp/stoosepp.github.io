@@ -3,7 +3,7 @@ class Events {
     "Questions & Qoffee: ",
     "Live Session: ",
     "Nothing On this Week. Have a look around at the first few 'tiles' below and finish up the Week 0 section and we'll get started next week!",
-    "Remember to Complete the Unit Outline Quiz to unlock the rest of the unit!",
+    "Remember to Complete the Unit Outline Quiz in Week 0 to unlock the rest of the unit!",
     "Nothing going on this Week.",
     "Final Questions & Qoffee Wrap up session! Check for details below.",
   ];
