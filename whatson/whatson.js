@@ -2,7 +2,7 @@ class Events {
   static whatson = [
     "Questions & Qoffee: ",
     "Live Session: ",
-    "Nothing On this Week. Review all the materials in the Unit Information and Week 0 section and we'll get started next week!",
+    "Nothing On this Week. Have a look around at the first few 'tiles' below and finish up the Week 0 section and we'll get started next week!",
     "Remember to Complete the Unit Outline Quiz to unlock the rest of the unit!",
     "Nothing going on this Week.",
     "Final Questions & Qoffee Wrap up session! Check for details below.",
@@ -78,11 +78,13 @@ export function displayWhatsOn({
   const result = thisWeek % 2;
 
   if (result == 0) {
-    //console.log("Even Week!");
+    //console.log("Even Week! Live Session");
     message = messages[1] + "Specific date/time and Zoom Join link below.";
   } else {
-    //console.log("Odd Week!");
-    message = messages[0] + "Specific date/time and Zoom Join link below.";
+    //console.log("Odd Week! Questions & Qoffee");
+    // message = messages[0] + "Specific date/time and Zoom Join link below.";
+    message =
+      "Nothing going on this week. Study and work on your project and reach out if you have any questions!"; //For T3 2023 only
   }
   if (thisWeek == 0) {
     heading = "It's Zero Week!";
