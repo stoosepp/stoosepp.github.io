@@ -7,6 +7,9 @@ class Events {
     "Nothing going on this Week.",
     "Final Questions & Qoffee Wrap up session! Check for details below.",
   ];
+  static whatson313 = [
+
+  ];
 }
 
 function getDateList(startDate, trimester) {
@@ -68,7 +71,7 @@ export function displayWhatsOn({
 
   const today = new Date();
   today.setHours(0, 0, 0, 1);
-  console.log("Today is  " + today);
+  //console.log("Today is  " + today);
   var messages = Events.whatson;
   const dateList = getDateList(classStartDate, trimester);
   const thisWeek = getCurrentWeek(today, dateList);
@@ -77,14 +80,14 @@ export function displayWhatsOn({
   let heading = `Week ${thisWeek}: What's on this week?`;
   const result = thisWeek % 2;
 
-  if (result == 0) {
+  if (result == 1) {
     //console.log("Even Week! Live Session");
     message = messages[1] + "Specific date/time and Zoom Join link below.";
   } else {
     //console.log("Odd Week! Questions & Qoffee");
     // message = messages[0] + "Specific date/time and Zoom Join link below.";
     message =
-      "Nothing going on this week. Study and work on your project and reach out if you have any questions!"; //For T3 2023 only
+      "Nothing going on this week. Study and work on your project and reach out if you have any questions!"; //Mo Q&A Sessions
   }
   if (thisWeek == 0) {
     heading = "It's Zero Week!";
