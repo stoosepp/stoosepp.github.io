@@ -91,19 +91,21 @@ export function displayWhatsOn({
   }
   if (thisWeek == 0) {
     heading = "It's Zero Week!";
-    //message = messages[2] + " " + messages[3];
+    message = messages[2] + " " + messages[3];
   } else if (thisWeek == 1) {
     //message = message + messages[3];
+    message = "Check below for Live Session Dates and Times."
   } else if (thisWeek == 7 || thisWeek == 8) {
     heading = "Assessment & Intensive Period";
-   //message = messages[4];
+   message = messages[4];
   } else if (thisWeek == 13) {
     //message = messages[5];
+    message = "Check below for Live Session Dates and Times."
   } else if (thisWeek > 13) {
     heading = "Teaching has ended for this Trimester";
-    //message = "";
+    message = "";
   }
-  message = "Check below for Live Session Dates and Times."
+
 
   document.getElementById("heading").innerHTML = heading;
   document.getElementById("details").innerHTML = message;
