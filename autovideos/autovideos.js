@@ -190,7 +190,7 @@ export function setUpVideos({
   document.getElementsByClassName("embed-container")[0].innerHTML =
     '<iframe src="https://www.youtube.com/embed/' +
     videoPlaceHolders[index] +
-    '"title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+    '"title="YouTube video player" width="100%" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
 }
 
 // async function getVideosFor() {
