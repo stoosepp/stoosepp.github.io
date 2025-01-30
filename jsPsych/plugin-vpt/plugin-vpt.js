@@ -525,12 +525,12 @@ var jsPsychVPT = (function (jspsych) {
           console.log(
             `Running Grid with level ${current_grid.level} and trial ${current_grid.trial}`
           );
-          this.jsPsych.pluginAPI.setTimeout(function () {
+          jsPsych.pluginAPI.setTimeout(function () {
             //After 1second hide and show stuff
             toggleElementsWithStatus('stimulus');
             buildGrid(current_grid.level, current_grid.trial);
           }, 1000);
-          this.jsPsych.pluginAPI.setTimeout(function () {
+          jsPsych.pluginAPI.setTimeout(function () {
             //After the Trial Duration has passed.
             clearGrid();
           }, trial.stimulous_duration * 1000); //Show fixation for
@@ -579,7 +579,7 @@ var jsPsychVPT = (function (jspsych) {
         // clear the display
         display_element.innerHTML = "";
         // end trial
-        this.jsPsych.finishTrial(trial_data);
+        jsPsych.finishTrial(trial_data);
       }
     }
   }
