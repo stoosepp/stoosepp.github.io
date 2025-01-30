@@ -1,8 +1,8 @@
-var jsPsychExtensionMouseTracking = (function (jspsych) {
+var jsPsychExtensionNormalisedMouseTracking = (function (jspsych) {
   "use strict";
 
   var _package = {
-    name: "@jspsych/extension-mouse-tracking",
+    name: "@jspsych/extension-normalised-mouse-tracking",
     version: "1.1.0",
     description:
       "jsPsych extension for mouse tracking regardless of screen size",
@@ -28,10 +28,10 @@ var jsPsychExtensionMouseTracking = (function (jspsych) {
       url: "git+https://github.com/jspsych/jsPsych.git",
       directory: "packages/extension-mouse-tracking",
     },
-    author: "Josh de Leeuw",
+    author: "Stoo Sepp",
     license: "MIT",
     bugs: {
-      url: "https://github.com/jspsych/jsPsych/issues",
+      url: "https://stoosepp.github.io/",
     },
     homepage: "https://www.jspsych.org/latest/extensions/mouse-tracking",
     peerDependencies: {
