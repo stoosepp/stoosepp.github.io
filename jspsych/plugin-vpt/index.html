@@ -12,7 +12,6 @@
  
     <!-- Import PLUGINS from UNPKG -->
      <script src="https://unpkg.com/@jspsych/plugin-preload"></script>
-     <script src="https://unpkg.com/@jspsych/plugin-fullscreen"></script>
      <script src="https://unpkg.com/@jspsych/plugin-instructions"></script>
 
 
@@ -42,15 +41,6 @@
     //Create Timeline array to add pages (or 'trials') to
     var timeline = [];
 
-    //////////////////////////////////////////////////////
-    //Enter Full Screen Mode
-    var enter_fullscreen = {
-      type: jsPsychFullscreen,
-      message: `<p>Thank you for your interest in this experiment. To ensure the experiment is run correctly, it needs to run in full screen mode in your browser.</p><p> Click the button below to continue.</p>`,
-      button_label: `Enter Full Screen`,
-      fullscreen_mode: true,
-    };
-    timeline.push(enter_fullscreen);
 
     //////////////////////////////////////////////////////
     //This loads instructions page 1
@@ -58,7 +48,8 @@
       type: jsPsychInstructions,
       allow_backward: false,
       pages: [
-        "Welcome to the experiment. Click next to begin.",
+        `<p>Welcome to the Visual Pattern Task (VPT) Demo. This will run you through a 2-grid practice trial, then into a 35-grid standard VPT trial.</p>
+        <p>Click next to begin.</p>`,
       ],
       show_clickable_nav: true,
     };
