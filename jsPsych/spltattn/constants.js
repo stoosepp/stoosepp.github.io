@@ -22,7 +22,7 @@ const TEMPLATE_CONTENT = {
   info_sheet: ` <div class="info-sheet"><p>
            <div class="flex">
            <div class="une-logo">
-           <img src="img/unelogo.svg" width = 20%></img>
+           <img src="http://stoosepp.github.io/jsPsych/spltattn/img/unelogo.svg" width = 20%></img>
            </div>
            <div><h2>EFFECTIVE STRATEGIES FOR LEARNING FROM COMPLEX MATERIALS.</h2>
            <h3>Information Sheet for Participants</h3>
@@ -37,7 +37,7 @@ const TEMPLATE_CONTENT = {
      <p>Please contact any of the following researchers, should you have any questions about this study.</p>
     <div class="flex">
          <div class="researcher-image">
-            <img src="img/stoosmall.jpg">
+            <img src="http://stoosepp.github.io/jsPsych/spltattn/img/stoosmall.jpg">
         </div>
    
    <div class="researcher-contact">
