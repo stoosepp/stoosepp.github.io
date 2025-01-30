@@ -1,1 +1,2 @@
-minimal
+.gitignore
+/jsPsych/spltattn/index.html
