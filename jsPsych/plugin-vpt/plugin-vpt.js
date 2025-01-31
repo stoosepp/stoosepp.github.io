@@ -39,7 +39,7 @@ var jsPsychVPT = (function (jspsych) {
     },
     homepage: "https://stoosepp.github.io/",
     peerDependencies: {
-      jspsych: ">=8.2.1",
+      jspsych: ">=7.1.0",
     },
     devDependencies: {
       "@jspsych/config": "^3.0.0",
@@ -51,79 +51,79 @@ var jsPsychVPT = (function (jspsych) {
     //console.log(`Adding CSS`);
     var new_html = "";
     new_html += `
-      <style>
-  
-      .jspsych-content {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    <style>
+
+    .jspsych-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+  .jspsych-content-wrapper[status='pre-stimulus'],  .jspsych-content-wrapper[status='stimulus']{
+    cursor:none;
   }
-    .jspsych-content-wrapper[status='pre-stimulus'],  .jspsych-content-wrapper[status='stimulus']{
-      cursor:none;
-    }
-      
-    .grid-container {
-    display: grid;
-    margin-top:60px;
-    }
     
-    .grid-container[status='pre-stimulus']{
-      display:none;
-    }
-  
-  .grid-container[status='stimulus']{
-      display:grid;
-      z-index:-1;
-     
+  .grid-container {
+  display: grid;
+  margin-top:60px;
   }
   
-  .grid-container[status='stimulus'] > .grid-tile{
-      cursor:none;
-     
+  .grid-container[status='pre-stimulus']{
+    display:none;
   }
-      .grid-column{
-      display:grid;
-      }
-  
-    .grid-tile {
-      border: 1px solid black;
-      background-color: white;
-      cursor: pointer;
-      box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
+
+.grid-container[status='stimulus']{
+    display:grid;
+    z-index:-1;
+   
+}
+
+.grid-container[status='stimulus'] > .grid-tile{
+    cursor:none;
+   
+}
+    .grid-column{
+    display:grid;
     }
-      .grid-tile[status="blank"]{
-      background-color: white;
-      }
-      .grid-tile[status="fill"]{
-      background-color:black;
-      }
-      .grid-tile[status='hidden']{
-      display:none;
-      }
-      .grid-tile[status='stimulus']{
-      cursor:none;
-      }
+
+  .grid-tile {
+    border: 1px solid black;
+    background-color: white;
+    cursor: pointer;
+    box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  }
+    .grid-tile[status="blank"]{
+    background-color: white;
+    }
+    .grid-tile[status="fill"]{
+    background-color:black;
+    }
+    .grid-tile[status='hidden']{
+    display:none;
+    }
+    .grid-tile[status='stimulus']{
+    cursor:none;
+    }
+
+
+   .vpt-button-bar{
+    height:60px;
+    margin-top:20px;
+    }
   
-  
-     .vpt-button-bar{
-      height:60px;
-      margin-top:20px;
-      }
-    
-      .fixation-point[status='pre-stimulus']{
-      visibility:visible;
-      }
-  
-  
-      .fixation-point[status='stimulus'],   .fixation-point[status='response'], .vpt-button-bar[status='stimulus'],.vpt-button-bar[status='pre-stimulus']{
-      visibility:hidden;
-       cursor:none;
-      }
-  
-      </style>`;
+    .fixation-point[status='pre-stimulus']{
+    visibility:visible;
+    }
+
+
+    .fixation-point[status='stimulus'],   .fixation-point[status='response'], .vpt-button-bar[status='stimulus'],.vpt-button-bar[status='pre-stimulus']{
+    visibility:hidden;
+     cursor:none;
+    }
+
+    </style>`;
 
     //Add Grid Container
 
@@ -210,12 +210,12 @@ var jsPsychVPT = (function (jspsych) {
     buttonSize
   ) {
     //console.log(index);
-    /*jsPsych.pluginAPI.*/ setTimeout(() => {
+    /*jsPsych.pluginAPI.*/const stimulusTimout = setTimeout(() => {
       //After 1second show Stimulus
       toggleElementsWithStatus(display_element, "stimulus");
       buildGrid(gridArray[index].level, gridArray[index].trial, buttonSize);
       //After 3 Seconds show blank grid
-      /*jsPsych.pluginAPI.*/ setTimeout(() => {
+     /* jsPsych.pluginAPI.*/setTimeout(() => {
         toggleElementsWithStatus(display_element, "response");
         //After the Trial Duration has passed.
         //console.log("Clear Grid Fired");
@@ -225,6 +225,7 @@ var jsPsychVPT = (function (jspsych) {
         });
       }, duration * 1000); //Show fixation for
     }, 1000);
+    
   }
   //Creates each Grid Tile
   function createTile(
@@ -325,6 +326,7 @@ var jsPsychVPT = (function (jspsych) {
     ////console.log(`There are ${buttonsArray.length} buttons in this grid.`)
   }
 
+
   function toggleElementsWithStatus(display_element, status) {
     //console.log("Toggle Elements fired.");
     document
@@ -352,9 +354,9 @@ var jsPsychVPT = (function (jspsych) {
 
   function submitButtonPushed(display_element, trial, gridArray, index) {
     toggleElementsWithStatus(display_element, "pre-stimulus");
-    display_element.querySelector(".grid-container").innerHTML = "";
+   display_element.querySelector('.grid-container').innerHTML = '';
     //Show Stimulus if within bounds of gridArray
-    showStimulus(
+   showStimulus(
       display_element,
       trial.stimulous_duration,
       gridArray,
@@ -362,11 +364,23 @@ var jsPsychVPT = (function (jspsych) {
       trial.button_size
     );
   }
-  /*
-    function end_trial(jsPsychGlobal,display_element, trial) {
-    
-    }
-    */
+  function end_trial(display_element, trial) {
+    // kill any remaining setTimeout handlers
+   /* jsPsych.pluginAPI./clearAllTimeouts();*/
+
+    //Set Scores
+    var trial_data = {
+      vpt_total_trials: trial.vpt_total_trials,
+      vpt_total_score: trial.vpt_total_score,
+      vpt_chupouw_score: trial.vpt_total_score / trial.vpt_total_trials, // Grabs the score defined in the info const. Score is the proportion of correct trials for all trials
+      vpt_dellasala_score: trial.vpt_dellasala_score, // Grabs the score defined in the info const. Score is the highest number of correctly filled boxes in the most complex grid.
+    };
+    //console.log(trial_data);
+    // clear the display
+    display_element.innerHTML = "";
+    // end trial
+    jsPsych.finishTrial(trial_data);
+  }
 
   const VPTTrials = {
     level1: {
@@ -493,12 +507,12 @@ var jsPsychVPT = (function (jspsych) {
         pretty_name: `The trial version of VPT you want to implement. Options are practice, chupouw and dellasala`,
         default: "chupouw",
         description: `There are a few implementations of the VPT to choose from, this plugin uses the computer-based method from  Chu et al., 2013; Pouw et al., 2016 
-          Chu et al., 2013; Pouw et al., 2016.
-          This is a computer-based version adapted from Della Sala et al., 1997. This is comprised of 2 easy practice grids and, then 5 trials for each level of complexity ranging from 7 black blocks to 11 black blocks. The scoring convention in these papers was the proportion of correct trials for all trials, which will be generated as vpt_chupouw_score.
-  
-          Della Sala et al., 1997
-          Use the original task from Della Sala et al., 1997. Couldn't find this original source, so it's based upon descriptions in Della Sala et al., 1999. This is comprised of 2 easy practice grids and, then 3 trials for each level from a matrix of 2x2 all the way up to 5x6, with half the boxes in each grid filled each time. Participants are given 3 sections to look at each grid, then they are reset for the participant to fill in and match. The final score is the number of filled cells in the most complex pattern recalled, which will be generated as vpt_dellasala_score.
-      `,
+		Chu et al., 2013; Pouw et al., 2016.
+		This is a computer-based version adapted from Della Sala et al., 1997. This is comprised of 2 easy practice grids and, then 5 trials for each level of complexity ranging from 7 black blocks to 11 black blocks. The scoring convention in these papers was the proportion of correct trials for all trials, which will be generated as vpt_chupouw_score.
+
+		Della Sala et al., 1997
+		Use the original task from Della Sala et al., 1997. Couldn't find this original source, so it's based upon descriptions in Della Sala et al., 1999. This is comprised of 2 easy practice grids and, then 3 trials for each level from a matrix of 2x2 all the way up to 5x6, with half the boxes in each grid filled each time. Participants are given 3 sections to look at each grid, then they are reset for the participant to fill in and match. The final score is the number of filled cells in the most complex pattern recalled, which will be generated as vpt_dellasala_score.
+	`,
       },
       practice: {
         type: jspsych.ParameterType.BOOL,
@@ -572,14 +586,14 @@ var jsPsychVPT = (function (jspsych) {
 
     //Handle Logic of Plugin in trial function
     /*
-  1. Setup Grid Container in display_element
-  2. Create Array of Grid objects
-  3 Run Grids
-  -Show 
-  -Respond to Clicks
-  3 End Trial
-  
-   */
+1. Setup Grid Container in display_element
+2. Create Array of Grid objects
+3 Run Grids
+-Show 
+-Respond to Clicks
+3 End Trial
+
+ */
     trial(display_element, trial) {
       //Setup Local Variables
       trial.vpt_total_score = 0;
@@ -601,7 +615,7 @@ var jsPsychVPT = (function (jspsych) {
       //console.log("grid " + JSON.stringify(gridArray));
 
       //3. Run First Grid
-
+      
       showStimulus(
         display_element,
         trial.stimulous_duration,
@@ -625,9 +639,7 @@ var jsPsychVPT = (function (jspsych) {
         if (correctTileIDs.length == filledTiles.length) {
           //the same amount of highlighted buttons are in each array so check each.
           filledTiles.forEach((highlightedButton) => {
-            if (
-              correctTileIDs.includes(Number(highlightedButton.id)) == false
-            ) {
+            if (correctTileIDs.includes(Number(highlightedButton.id)) == false) {
               correct = false;
             }
             //console.log(correct);
@@ -635,28 +647,14 @@ var jsPsychVPT = (function (jspsych) {
         } else {
           correct = false;
         }
-        if (correct == true) {
+        if (correct == true){
           trial.vpt_total_score++;
         }
         //console.log("Is correct? " + correct + 'Total score is ' + trial.vpt_total_score);
         current_grid_index++;
         trial.vpt_total_trials++;
         if (current_grid_index > gridArray.length - 1) {
-          // kill any remaining setTimeout handlers
-          //jsPsych.pluginAPI.clearAllTimeouts();
-
-          //Set Scores
-          var trial_data = {
-            vpt_total_trials: trial.vpt_total_trials,
-            vpt_total_score: trial.vpt_total_score,
-            vpt_chupouw_score: trial.vpt_total_score / trial.vpt_total_trials, // Grabs the score defined in the info const. Score is the proportion of correct trials for all trials
-            vpt_dellasala_score: trial.vpt_dellasala_score, // Grabs the score defined in the info const. Score is the highest number of correctly filled boxes in the most complex grid.
-          };
-          //console.log(trial_data);
-          // clear the display
-          display_element.innerHTML = "";
-          // end trial
-          this.jsPsych.finishTrial(trial_data);
+          end_trial(display_element, trial);
         } else {
           submitButtonPushed(
             display_element,
