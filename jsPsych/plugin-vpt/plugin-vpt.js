@@ -656,7 +656,7 @@ var jsPsychVPT = (function (jspsych) {
           // clear the display
           display_element.innerHTML = "";
           // end trial
-          jsPsych.finishTrial(trial_data);
+          this.jsPsych.finishTrial(trial_data);
         } else {
           submitButtonPushed(
             display_element,
