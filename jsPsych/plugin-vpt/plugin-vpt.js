@@ -210,12 +210,12 @@ var jsPsychVPT = (function (jspsych) {
       buttonSize
     ) {
       //console.log(index);
-      jsPsych.pluginAPI.setTimeout(() => {
+      /*jsPsych.pluginAPI.*/setTimeout(() => {
         //After 1second show Stimulus
         toggleElementsWithStatus(display_element, "stimulus");
         buildGrid(gridArray[index].level, gridArray[index].trial, buttonSize);
         //After 3 Seconds show blank grid
-        jsPsych.pluginAPI.setTimeout(() => {
+        /*jsPsych.pluginAPI.*/setTimeout(() => {
           toggleElementsWithStatus(display_element, "response");
           //After the Trial Duration has passed.
           //console.log("Clear Grid Fired");
@@ -365,7 +365,7 @@ var jsPsychVPT = (function (jspsych) {
     }
     function end_trial(display_element, trial) {
       // kill any remaining setTimeout handlers
-      jsPsych.pluginAPI.clearAllTimeouts();
+      //jsPsych.pluginAPI.clearAllTimeouts();
   
       //Set Scores
       var trial_data = {
