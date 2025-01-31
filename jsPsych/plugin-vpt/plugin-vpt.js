@@ -39,7 +39,7 @@ var jsPsychVPT = (function (jspsych) {
       },
       homepage: "https://stoosepp.github.io/",
       peerDependencies: {
-        jspsych: ">=7.1.0",
+        jspsych: ">=8.2.1",
       },
       devDependencies: {
         "@jspsych/config": "^3.0.0",
