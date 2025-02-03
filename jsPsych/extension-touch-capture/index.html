@@ -73,6 +73,7 @@
         task: "draw",
       },
       on_finish:function(data) {
+        console.log('Reverting Scroll behavior.')
         document.body.style.touchAction = "auto";
         document.body.style.scrollBehavior = "auto";
   }
