@@ -25,18 +25,18 @@
   </head>
   <style>
     body {
-      overscroll-behavior: contain;
+      overscroll-behavior: none;
+      touch-action:none;
     }
   </style>
+
+  <body></body>
   <script>
-    window.addEventListener("load", (event) => {
+       window.addEventListener("load", (event) => {
     var x=window.scrollX;
     var y=window.scrollY;
     window.onscroll=function(){window.scrollTo(x, y);};
-    }
-  </script>
-  <body></body>
-  <script>
+    });
     const jsPsych = initJsPsych({
       extensions: [
         {
