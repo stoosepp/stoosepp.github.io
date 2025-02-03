@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Touch test</title>
+    <script src="touchcaptureB.js"></script>
+    <script src="touchDraw.js"></script>
+    <link href="touchcapture.css" rel="stylesheet" type="text/css" />
+   
+  </head>
+  <style>
+    button[hidden="true"]{
+      display:none;
+    }
+
+  </style>
+  <body>
+    <div
+      id="touch-area"
+      style="
+        width: 100%;
+        height: 300px;
+        border: 1px solid black;
+        position: relative;
+      "
+    >
+      <canvas id="touch-canvas" style="width: 100%; height: 100%"></canvas>
+    </div>
+    <p>Drag your finger around inside the box</p>
+    <button type="button" value="clickme" onclick="startCapture('touch-area');" />Start</button>
+    <button type="button" hidden="true" value="clickme" onclick="saveData();" />Stop</button>
+    <button type="button" hidden="true" value="clickme" onclick="displayTouchData();" />Display</button>
+
+  </body>
+</html>
