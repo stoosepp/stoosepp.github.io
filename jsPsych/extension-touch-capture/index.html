@@ -24,10 +24,17 @@
     <script src="docs-demo-timeline.js"></script>
   </head>
   <style>
-    body{
+    body {
       overscroll-behavior: none;
     }
   </style>
+  <script>
+    window.addEventListener("load", (event) => {
+    var x=window.scrollX;
+    var y=window.scrollY;
+    window.onscroll=function(){window.scrollTo(x, y);};
+    }
+  </script>
   <body></body>
   <script>
     const jsPsych = initJsPsych({
@@ -97,18 +104,24 @@
             const denormalisedY = p.normalisedY * window.innerHeight;
             if (p.event == "touchstart") {
               html += `<div style="width: 10px; height: 10px; border-radius:5px; background-color: green; position: absolute; top: ${
-              denormalisedY - 1 - targetRect.top -5
-            }px; left: ${/*p.x*/denormalisedX - 1 - targetRect.left-5 }px;"></div>`;
+                denormalisedY - 1 - targetRect.top - 5
+              }px; left: ${
+                /*p.x*/ denormalisedX - 1 - targetRect.left - 5
+              }px;"></div>`;
             }
             if (p.event == "touchmove") {
               html += `<div style="width: 2.5px; height: 2.5px; background-color: gray; position: absolute; top: ${
-              denormalisedY - 1 - targetRect.top
-            }px; left: ${/*p.x*/denormalisedX - 1 - targetRect.left}px;"></div>`;
+                denormalisedY - 1 - targetRect.top
+              }px; left: ${
+                /*p.x*/ denormalisedX - 1 - targetRect.left
+              }px;"></div>`;
             }
             if (p.event == "touchend") {
               html += `<div style="width: 10px; height: 10px; border-radius:5px; background-color: red; position: absolute; top: ${
-              denormalisedY - 1 - targetRect.top -5
-            }px; left: ${/*p.x*/denormalisedX - 1 - targetRect.left -5}px;"></div>`;
+                denormalisedY - 1 - targetRect.top - 5
+              }px; left: ${
+                /*p.x*/ denormalisedX - 1 - targetRect.left - 5
+              }px;"></div>`;
             }
           }
           document.querySelector("#target").innerHTML = html;
@@ -124,7 +137,7 @@
       },
     };
 
-    const timeline = [browser_check,trial, replay];
+    const timeline = [browser_check, trial, replay];
 
     if (typeof jsPsych !== "undefined") {
       jsPsych.run(generateDocsDemoTimeline(timeline));
