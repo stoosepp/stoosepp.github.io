@@ -80,7 +80,7 @@ export function displayWhatsOn({
   let heading = `Week ${thisWeek}: What's on this week?`;
   const result = thisWeek % 2;
 
-  if (result == 1) {
+  /*if (result == 1) {
     //console.log("Even Week! Live Session");
     message = messages[1] + "Specific date/time and Zoom Join link below.";
   } else {
@@ -88,14 +88,14 @@ export function displayWhatsOn({
     // message = messages[0] + "Specific date/time and Zoom Join link below.";
     message =
       "Nothing going on this week. Study and work on your project and reach out if you have any questions!"; //Mo Q&A Sessions
-  }
+  }*/
   if (thisWeek == 0) {
     heading = "It's Zero Week!";
     message = messages[2] + " " + messages[3];
-  } else if (thisWeek == 1) {
-    //message = message + messages[3];
-    message = "Check below for Live Session Dates and Times."
-  } else if (thisWeek == 7 || thisWeek == 8) {
+  // } else if (thisWeek == 1) {
+  //   //message = message + messages[3];
+  //   message = "Check below for Live Session Dates and Times."
+  // } else if (thisWeek == 7 || thisWeek == 8) {
     heading = "Assessment & Intensive Period";
    message = messages[4];
   } else if (thisWeek == 13) {
@@ -104,6 +104,9 @@ export function displayWhatsOn({
   } else if (thisWeek > 13) {
     heading = "Teaching has ended for this Trimester";
     message = "";
+  }
+  else{
+    message = "Check below for Live Session Dates and Times."
   }
 
 
