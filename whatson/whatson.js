@@ -108,8 +108,6 @@ export function displayWhatsOn({
   else{
     message = "Check below for Live Session Dates and Times."
   }
-
-
   document.getElementById("heading").innerHTML = heading;
   document.getElementById("details").innerHTML = message;
 }

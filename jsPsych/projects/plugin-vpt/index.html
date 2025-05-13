@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>VPT Demo</title>
+    <!-- Import  JSPsych Foundation -->
+    <script src="../../dist/jspsych.js"></script>
+    <link href="../../dist/jspsych.css" rel="stylesheet" type="text/css" />
+
+
+    <!-- Import PLUGINS -->
+    <script src="../../dist/plugin-preload.js"></script>
+    <script src="../../dist/plugin-html-button-response.js"></script>
+
+    <!-- Import VPT PLUGIN -->
+    <script src="plugin-vpt.js"></script>
+    <!-- Import EXTENSIONS -->
+  </head>
+  <body></body>
+  <script>
+    //////////////////////////////////////////////////////
+    //Set up local variables
+    var passedPracticeGrids = false;
+    var lastScore;
+    var totalTrials;
+
+    //////////////////////////////////////////////////////
+    //Intitalise Experiment
+    const jsPsych = initJsPsych({
+      experiment_width: 1000,
+      //show_progress_bar:true,
+      on_finish: function () {
+        console.log(`Experiment is DONE!`);
+        jsPsych.data.displayData();
+      },
+    });
+
+    //Create Timeline array to add pages (or 'trials') to
+    var timeline = [];
+
+
+    //////////////////////////////////////////////////////
+    //This loads instructions page 1
+    var practiceVPTInstructions = {
+      type: jsPsychHtmlButtonResponse,
+      allow_backward: false,
+      stimulus: `<p>In this part of the experiment you'll play a matching game. You will be presented with a grid of white boxes with some black boxes filled in.</p><p> Each grid will be shown for 3 seconds, then will go blank. Using your mouse or trackpad, it's your job to click the squares in the grid to replicate the grid pattern you just saw.</p><p> Let's practice. The first grid will appear as soon as you click the 'Next' button. When you're ready to go, click Next.</p>`,
+      choices: [`Let's go!`],
+    };
+    timeline.push(practiceVPTInstructions);
+
+    //////////////////////////////////////////////////////
+    //This loads practice Trial
+    var practiceVPT = {
+      type: jsPsychVPT,
+      version: "chupouw",
+      practice: true,
+      on_finish: function (data) {
+        if (data.vpt_chupouw_score == 1) {
+          passedPracticeGrids = true;
+          console.log("Participant Passed Practice");
+        }
+        lastScore = Number(data.vpt_total_score);
+        totalTrials = Number(data.vpt_total_trials);
+        //console.log(`Chupouw score was ${data.vpt_chupouw_score}`);
+        //console.log(`Della Sala score was ${data.vpt_dellasala_score}`);
+        //console.log(`Total ${data.vpt_total_score} ${lastScore}`);
+      },
+    };
+   timeline.push(practiceVPT);
+
+    //This loads instructions page 1
+    var tryAgain = {
+      type: jsPsychHtmlButtonResponse,
+      stimulus: "Unfortunately you didn't pass both practice grids. Click Next to try again.",
+  choices:['Try Again.'],
+    };
+
+    var loop = {
+      timeline: [tryAgain, practiceVPTInstructions, practiceVPT],
+      loop_function: function () {
+        if ((passedPracticeGrids = false)) {
+          return true;
+        } else {
+          return false;
+        }
+      },
+    };
+
+    var if_node = {
+      timeline: [loop],
+      conditional_function: function () {
+        if (passedPracticeGrids == false) {
+          return true;
+        } else {
+          return false;
+        }
+      },
+    };
+    timeline.push(if_node);
+
+    //////////////////////////////////////////////////////
+    //This loads the congraduations page
+
+    var fullTrialisNext = {
+      type: jsPsychHtmlButtonResponse,
+      stimulus: function () {
+        
+        return [
+          `Well done. You Scored ${lastScore}/${totalTrials}. Now it's time to take the real game, which should take about 5-10 minutes. When you're ready, click the 'Begin' button.`,
+        ];
+        lastScore = 0;
+        totalTrials = 0;
+      },
+      choices: ["Begin."],
+    };
+    timeline.push(fullTrialisNext);
+
+    //////////////////////////////////////////////////////
+    //This loads the full task
+    var fullVPTTask = {
+      type: jsPsychVPT,
+      version: "chupouw",
+      practice: false,
+      on_finish: function (data) {
+        lastScore = Number(data.vpt_total_score);
+        totalTrials = Number(data.vpt_total_trials);
+       // console.log(`Chupouw score was ${data.chupouw_score}`);
+        //console.log(`Della Sala score was ${data.dellasala_score}`);
+      },
+    };
+    timeline.push(fullVPTTask);
+
+    //////////////////////////////////////////////////////
+    //This loads instructions page 1
+    var postVPTInstructions = {
+      type: jsPsychHtmlButtonResponse,
+      allow_backward: false,
+      stimulus: function () {
+        return [
+          `Thanks for trying this memory game. Your final score was ${lastScore}/${totalTrials}`
+          ];
+        },
+      choices: ["Finish"],
+    };
+    timeline.push(postVPTInstructions);
+//
+    //Run the Experiment ====================================
+    jsPsych.run(timeline);
+  </script>
+</html>

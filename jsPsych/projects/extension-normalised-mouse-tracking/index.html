@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Normalised Extension Demo</title>
+
+   <!-- Import  JSPsych Foundation from UNPKG -->
+   <script src="https://unpkg.com/jspsych@8.2.1"></script>
+   <link href="https://unpkg.com/jspsych@8.2.1/css/jspsych.css" rel="stylesheet" type="text/css" />
+
+
+  <!-- Import PLUGINS from UNPKG -->
+   <script src="https://unpkg.com/@jspsych/plugin-html-button-response"></script>
+
+    <!-- Import EXTENSIONS -->
+    <script src="extension-normalised-mouse-tracking.js"></script>
+
+    <!-- Import DOCS DEMO TIMELINE -->
+    <script src="docs-demo-timeline.js"></script>
+  </head>
+  <body></body>
+  <script>
+    const jsPsych = initJsPsych({
+      extensions: [
+        {
+          type: jsPsychExtensionNormalisedMouseTracking,
+          params: { minimum_sample_time: 50 },
+        },
+      ],
+    });
+
+    const trial = {
+      type: jsPsychHtmlButtonResponse,
+      stimulus:
+        '<div id="target" style="width:250px; height: 250px; background-color: #333; margin: auto;"></div>',
+      choices: ["Done"],
+      prompt: "<p>Move your mouse around inside the square.</p>",
+      extensions: [
+        {
+          type: jsPsychExtensionNormalisedMouseTracking,
+          params: { targets: ["#target"]},
+        },
+      ],
+      data: {
+        task: "draw",
+      },
+    };
+
+    const replay = {
+      type: jsPsychHtmlButtonResponse,
+      stimulus:
+        '<div id="target" style="width:250px; height: 250px; background-color: #333; margin: auto; position: relative;"></div>',
+      choices: ["Done"],
+      prompt: "<p>Here's the recording of your mouse movements</p>",
+      on_load: function () {
+        const mouseMovements = jsPsych.data
+          .get()
+          .last(1)
+          .values()[0].mouse_tracking_data;
+        const targetRect = jsPsych.data.get().last(1).values()[0]
+          .mouse_tracking_targets["#target"];
+
+        const startTime = performance.now();
+
+        function draw_frame() {
+          const timeElapsed = performance.now() - startTime;
+          const points = mouseMovements.filter((x) => x.t <= timeElapsed);
+          let html = ``;
+          for (const p of points) {
+            const denormalisedX = p.normalisedX * window.innerWidth;
+            const denormalisedY = p.normalisedY * window.innerHeight;
+            html += `<div style="width: 3px; border-radius:1.5px; height: 3px; background-color: blue; position: absolute; top: ${
+              /*p.y*/denormalisedY - 1 - targetRect.top
+            }px; left: ${/*p.x*/denormalisedX - 1 - targetRect.left}px;"></div>`;
+          }
+          document.querySelector("#target").innerHTML = html;
+          if (points.length < mouseMovements.length) {
+            requestAnimationFrame(draw_frame);
+          }
+        }
+
+        requestAnimationFrame(draw_frame);
+      },
+      data: {
+        task: "replay",
+      },
+    };
+
+    const timeline = [trial, replay];
+
+    if (typeof jsPsych !== "undefined") {
+      jsPsych.run(generateDocsDemoTimeline(timeline));
+    } else {
+      document.body.innerHTML =
+        '<div style="text-align:center; margin-top:50%; transform:translate(0,-50%);">You must be online to view the plugin demo.</div>';
+    }
+  </script>
+</html>
