@@ -5,13 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Normalised Extension Demo</title>
 
-   <!-- Import  JSPsych Foundation from UNPKG -->
-   <script src="https://unpkg.com/jspsych@8.2.1"></script>
-   <link href="https://unpkg.com/jspsych@8.2.1/css/jspsych.css" rel="stylesheet" type="text/css" />
+    <!-- Import  JSPsych Foundation from UNPKG -->
+    <script src="https://unpkg.com/jspsych@8.2.1"></script>
+    <link
+      href="https://unpkg.com/jspsych@8.2.1/css/jspsych.css"
+      rel="stylesheet"
+      type="text/css"
+    />
 
-
-  <!-- Import PLUGINS from UNPKG -->
-   <script src="https://unpkg.com/@jspsych/plugin-html-button-response"></script>
+    <!-- Import PLUGINS from UNPKG -->
+    <script src="https://unpkg.com/@jspsych/plugin-html-button-response"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-call-function"></script>
 
     <!-- Import EXTENSIONS -->
     <script src="extension-normalised-mouse-tracking.js"></script>
@@ -21,6 +25,8 @@
   </head>
   <body></body>
   <script>
+    var thisPath = "../splitattncursor/img/handicon32.png";
+   
     const jsPsych = initJsPsych({
       extensions: [
         {
@@ -30,6 +36,17 @@
       ],
     });
 
+    var set_cursor = {
+      type: jsPsychCallFunction,
+      func: function () {
+        thisPath = "../splitattncursor/img/arrowicon32.png";
+        console.log(`Set thisPath in set_cursor to ${thisPath}`);
+      },
+    };
+
+    function getPath(){
+      return 'hello';
+    }
     const trial = {
       type: jsPsychHtmlButtonResponse,
       stimulus:
@@ -39,7 +56,7 @@
       extensions: [
         {
           type: jsPsychExtensionNormalisedMouseTracking,
-          params: { targets: ["#target"]},
+          params: { targets: ["#target"], cursorPath: getPath() },
         },
       ],
       data: {
@@ -71,8 +88,10 @@
             const denormalisedX = p.normalisedX * window.innerWidth;
             const denormalisedY = p.normalisedY * window.innerHeight;
             html += `<div style="width: 3px; border-radius:1.5px; height: 3px; background-color: blue; position: absolute; top: ${
-              /*p.y*/denormalisedY - 1 - targetRect.top
-            }px; left: ${/*p.x*/denormalisedX - 1 - targetRect.left}px;"></div>`;
+              /*p.y*/ denormalisedY - 1 - targetRect.top
+            }px; left: ${
+              /*p.x*/ denormalisedX - 1 - targetRect.left
+            }px;"></div>`;
           }
           document.querySelector("#target").innerHTML = html;
           if (points.length < mouseMovements.length) {
@@ -87,7 +106,7 @@
       },
     };
 
-    const timeline = [trial, replay];
+    const timeline = [set_cursor, trial, replay];
 
     if (typeof jsPsych !== "undefined") {
       jsPsych.run(generateDocsDemoTimeline(timeline));

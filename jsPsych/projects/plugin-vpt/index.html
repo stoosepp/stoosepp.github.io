@@ -52,7 +52,6 @@
     //This loads practice Trial
     var practiceVPT = {
       type: jsPsychVPT,
-      version: "chupouw",
       practice: true,
       on_finish: function (data) {
         if (data.vpt_chupouw_score == 1) {
@@ -119,7 +118,7 @@
     //This loads the full task
     var fullVPTTask = {
       type: jsPsychVPT,
-      version: "chupouw",
+      version: "demo",
       practice: false,
       on_finish: function (data) {
         lastScore = Number(data.vpt_total_score);

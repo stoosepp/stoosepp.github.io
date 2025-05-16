@@ -78,8 +78,8 @@ https://www.une.edu.au/about-une/faculty-of-humanities-arts-social-sciences-and-
     </div>
     <p>If you would like to participate, please click the link below to begin.</p>
     <p>Thank you for your interest in this study.</p></div>`,
-  pretest_instructions: `<p>Dear participant,</p>
-    <p>First, you’ll complete a brief quiz of twelve multiple-choice questions regarding the human nervous system to determine how much you know about the topic. The quiz consists of two parts: the first four questions assess your understanding of the background information, and the rest of the questions measure your pre-existing knowledge on the topics we will provide you with during this session. </p>
+  pretest_instructions: `<p>Thank you for playing through that game.</p>
+    <p>Next, you’ll complete a brief quiz of twelve multiple-choice questions regarding the human nervous system to determine how much you know about the topic. The quiz consists of two parts: the first four questions assess your understanding of the background information, and the rest of the questions measure your pre-existing knowledge on the topics we will provide you with during this session. </p>
     <p>Please take your time and make sure you read every question carefully before you answer. Every question has four possible answers. Only one answer is correct, so please answer honestly.</p>
     <p>The last eight questions are quite difficult for people that have never learned about biochemical processes in the brain before. It quite normal if you can’t answer any of these eight questions correctly, because it just means you haven’t learned about the topic yet.</p>
     <p>We thank you for your efforts! </p>

@@ -17,7 +17,12 @@ function isRetinaDisplay() {
   return window.devicePixelRatio >= 2;
 }
 
-function randomIntFromInterval(min, max) { // min and max included 
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function randomIntFromInterval(min, max) {
+  // min and max included
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
@@ -52,7 +57,10 @@ function setCondition(condNum) {
 }
 
 function countdown(startMinute, delay) {
-  document.getElementsByClassName("jspsych-btn")[0].style.display = "none";
+  const button = document.getElementsByClassName("jspsych-btn")[0];
+  if (button) {
+    button.style.display = "none";
+  }
 
   var wait_time = startMinute * 60 * 1000; // in milliseconds
   var start_time = performance.now();
@@ -113,11 +121,10 @@ function buildTest(testName, timeline) {
     
      }
     }`);
-     console.log(`Pushing ${testName}Q${i + 1} to Testbed`);
+    console.log(`Pushing ${testName}Q${i + 1} to Testbed`);
     timeline.push(eval(`${testName}Q${i + 1}`));
     //finalQuestionArray.push(eval(`${testName}Q${i + 1}`));
   }
-  console.log('Test Built.');
+  console.log("Test Built.");
   //setTimeout(() => { console.log(`Waiting after building Pretest`); }, 2000);
-
 }

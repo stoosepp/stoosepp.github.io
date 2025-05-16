@@ -144,6 +144,7 @@ var jsPsychExtensionNormalisedMouseTracking = (function (jspsych) {
     currentTrialSelectors;
     currentTrialStartTime;
     minimumSampleTime;
+    cursorPath;
     lastSampleTime;
     eventsToTrack;
     initialize = async ({ minimum_sample_time = 0 }) => {
@@ -155,6 +156,9 @@ var jsPsychExtensionNormalisedMouseTracking = (function (jspsych) {
       this.currentTrialData = [];
       this.currentTrialTargets = /* @__PURE__ */ new Map();
       this.currentTrialSelectors = params.targets || [];
+      this.cursorPath = params.cursorPath;
+      console.log(`Target is ${params.targets} in parameter.`);
+      console.log(`CursorPath is ${params.cursorPath} in parameter.`);
       this.lastSampleTime = null;
       this.eventsToTrack = params.events || ["mousemove"];
       this.domObserver.observe(this.jsPsych.getDisplayElement(), {
@@ -162,6 +166,30 @@ var jsPsychExtensionNormalisedMouseTracking = (function (jspsych) {
       });
     };
     on_load = () => {
+      //console.log(`Cursor Path is ${this.cursorPath} in extension.`);
+      //console.log(`Targets are ${this.targets} in extension.`);
+
+      // Add a style element with a high-specificity rule
+
+      const cursorStyleElement = document.createElement("style");
+      cursorStyleElement.id = "custom-cursor-style";
+      if (this.cursorPath == "none") {
+        console.log(`cursor is set to none`);
+        cursorStyleElement.innerHTML = `
+  html, body, * {
+    cursor: none !important;
+  }
+`;
+      } else {
+        cursorStyleElement.innerHTML = `
+  html, body, * {
+    cursor: url('${this.cursorPath}'), pointer !important;
+  }
+`;
+      }
+
+      document.head.appendChild(cursorStyleElement);
+
       this.currentTrialStartTime = performance.now();
       if (this.eventsToTrack.includes("mousemove")) {
         window.addEventListener("mousemove", this.mouseMoveEventHandler);
@@ -174,6 +202,14 @@ var jsPsychExtensionNormalisedMouseTracking = (function (jspsych) {
       }
     };
     on_finish = () => {
+      console.log("Finished");
+      //document.body.style.setProperty("cursor", "default", "important");
+      //Revert to correct cursor
+      const styleElement = document.getElementById("custom-cursor-style");
+  if (styleElement) {
+    styleElement.remove();
+  }
+
       this.domObserver.disconnect();
       if (this.eventsToTrack.includes("mousemove")) {
         window.removeEventListener("mousemove", this.mouseMoveEventHandler);

@@ -92,6 +92,8 @@
 
     //Set up local variables
     var condition = "";
+    var participantHandedness = "";
+
     var source = "";
     var demo_condition = "";
     var iconSize = "32";
@@ -106,8 +108,8 @@
 
     var passedPracticeGrids = false;
     var passedAttnCheck = false;
-    var lastScore;
-    var totalTrials;
+    var vptScore = 0;
+    var vptTrialCount = 0;
 
     //////////////////////////////////////////////////////
     //Intitalise Experiment
@@ -159,6 +161,7 @@
           }
         }
       },
+
       extensions: [
         {
           type: jsPsychExtensionNormalisedMouseTracking,
@@ -201,20 +204,18 @@
     if (urlVar.condNum != null) {
       source = "manual";
       condition = setCondition(urlVar.condNum);
-    } else if (urlVar.datapipe == "true") {
-      source = "datapipe";
-    } else {
-      const rndInt = randomIntFromInterval(0, 2);
-      condition = setCondition(`${rndInt}`);
-      source = "none";
     }
     if (urlVar.PROLIFIC_PID != null) {
+      source = "prolific";
       prolific_pid = urlVar.PROLIFIC_PID;
       study_id = urlVar.STUDY_ID;
       session_id = urlVar.SESSION_ID;
       console.log(
         `Prolific is being used with PID:${prolific_pid}, Study ID: ${study_id}, and Session: ${session_id}`
       );
+    }
+    if (urlVar.une_psych != null) {
+      source = "une_psych";
     }
 
     //const condNum = jsPsych.data.getURLVariable("condNum");
@@ -229,7 +230,6 @@
 
     //Create Timeline array to add pages (or 'trials') to
     var timeline = [];
-
     //////////////////////////////////////////////////////
     //This loads all your assets
     var preload_assets = {
@@ -264,22 +264,22 @@
 
     //////////////////////////////////////////////////////
     /* DEMO Condition Selection
-        var conditionSelect = {
-          type: jsPsychSurveyMultiChoice,
-          questions: [
-            {
-              prompt: `<p><b>This study is in DEMO mode. <br> Select a condition from the choices below.</b></p>`,
-              name: "selectedCondition",
-              options: ["Control", "Arrow Cursor", "Hand Cursor"],
-              required: true,
-            },
-          ],
-          on_finish: function (data) {
-            (condition = data.response.selectedCondition), console.log(condition);
-          },
-        };
+           var conditionSelect = {
+             type: jsPsychSurveyMultiChoice,
+             questions: [
+               {
+                 prompt: `<p><b>This study is in DEMO mode. <br> Select a condition from the choices below.</b></p>`,
+                 name: "selectedCondition",
+                 options: ["Control", "Arrow Cursor", "Hand Cursor"],
+                 required: true,
+               },
+             ],
+             on_finish: function (data) {
+               (condition = data.response.selectedCondition), console.log(condition);
+             },
+           };
 
-        */
+           */
 
     //////////////////////////////////////////////////////
     //Deal with no URL variables
@@ -290,6 +290,24 @@
       on_finish: function (data) {
         //Send users to URL
         window.location = "https://stoosepp.github.io";
+      },
+    };
+
+    //////////////////////////////////////////////////////
+    //Setup Experiment
+    var experiment_details = {
+      type: jsPsychCallFunction,
+      func: function () {},
+      on_load: function () {},
+      on_finish(data) {
+        data.subj_code = subj_code;
+        data.condition = condition;
+        data.source = source;
+        if (source == "prolific") {
+          data.prolific_pid = prolific_pid;
+          data.study_id = study_id;
+          data.session_id = session_id;
+        }
       },
     };
 
@@ -362,9 +380,28 @@
       ],
       on_finish: function (data) {
         data.stimulus = "Age";
-        data.gender = data.response.selectedAge;
+        data.age = data.response.selectedAge;
         data.response = null;
         data.question_order = null;
+      },
+    };
+    var handedness = {
+      type: jsPsychSurveyMultiChoice,
+      questions: [
+        {
+          prompt: `<p>What is your dominant hand?</p>`,
+          name: "selectedHand",
+          options: ["Left", "Right"],
+          required: true,
+        },
+      ],
+      on_finish: function (data) {
+        data.stimulus = "Hand";
+        data.handedness = data.response.selectedHand;
+        data.response = null;
+        data.question_order = null;
+        participantHandedness = data.handedness;
+        console.log(`Participant is ${participantHandedness} handed`);
       },
     };
 
@@ -396,7 +433,6 @@
       on_start: function () {
         should_be_in_fullscreen = true; // once this trial starts, the participant should be in fullscreen
       },
-      data: {},
     };
 
     //////////////////////////////////////////////////////
@@ -408,27 +444,25 @@
       on_finish: function (data) {
         data.stimulus = "Practice VPT Instructions";
       },
-      data: {},
     };
 
     //////////////////////////////////////////////////////
     //This loads practice Trial
     var practiceVPT = {
       type: jsPsychVPT,
-      version: "chupouw",
       practice: true,
       on_finish: function (data) {
-        if (data.vpt_chupouw_score == 1) {
+        if (data.chupouw_score == 1) {
           passedPracticeGrids = true;
           console.log("Participant Passed Practice");
         }
-        lastScore = Number(data.vpt_total_score);
-        totalTrials = Number(data.vpt_total_trials);
-        //console.log(`Chupouw score was ${data.vpt_chupouw_score}`);
-        //console.log(`Della Sala score was ${data.vpt_dellasala_score}`);
-        console.log(`Total ${data.vpt_total_score} ${lastScore}`);
+        vptScore = data.total_score;
+        vptTrialCount = data.total_trials;
+        // console.log(data);
+        // console.log(`Score = ${vptScore}/${vptTrialCount}.`);
+        // console.log(`Chupouw score was ${data.chupouw_score}`);
+        // console.log(`Della Sala score was ${data.dellasala_score}`);
       },
-      data: {},
     };
 
     //This loads instructions page 1
@@ -439,7 +473,6 @@
         "Unfortunately you didn't pass both practice grids. Click Next to try again.",
       ],
       show_clickable_nav: true,
-      data: {},
     };
 
     var loop = {
@@ -467,74 +500,48 @@
 
     //////////////////////////////////////////////////////
     //This loads the congratulations page
-    /*
-      var fullVPTInstructions = {
-        type: jsPsychInstructions,
-        allow_backward: false,
-        pages: function () {
-          return [
-            `Well done. You Scored ${lastScore}/${totalTrials}. Now it's time to play the real game, which should take about 5-10 minutes. When you're ready, click the 'Begin >' button.`,
-          ];
-        },
-        show_clickable_nav: true,
-        button_label_next: "Begin",
-        on_finish: function (data) {
-          data.stimulus = "Full VPT Instructions";
-        },
-      };*/
-
     var fullVPTInstructions = {
       type: jsPsychHtmlButtonResponse,
       stimulus: function () {
         return [
-          `Well done. You Scored ${lastScore}/${totalTrials}. Now it's time to take the real game, which should take about 5-10 minutes. When you're ready, click the 'Begin' button.`,
+          `Well done. You Scored ${vptScore}/${vptTrialCount}. Now it's time to take the real game, which should take about 5-10 minutes. When you're ready, click the 'Begin' button.`,
         ];
       },
       choices: ["Begin."],
-      data: {},
     };
 
     //////////////////////////////////////////////////////
     //This loads the full task
     var fullVPTTask = {
       type: jsPsychVPT,
-      version: "chupouw",
+      version: "chupouw", //chupouw or demo
       practice: false,
       on_finish: function (data) {
-        lastScore = Number(data.vpt_total_score);
-        totalTrials = Number(data.vpt_total_trials);
-        console.log(`Chupouw score was ${data.chupouw_score}`);
-        console.log(`Della Sala score was ${data.dellasala_score}`);
+        vptScore = data.total_score;
+        vptTrialCount = data.total_trials;
+        // console.log(data);
+        // console.log(`Score = ${vptScore}/${vptTrialCount}.`);
+        // console.log(`Chupouw score was ${data.chupouw_score}`);
+        // console.log(`Della Sala score was ${data.dellasala_score}`);
       },
     };
 
     //////////////////////////////////////////////////////
-    //This loads instructions page 1
-    /*
-        var postVPTInstructions = {
-          type: jsPsychInstructions,
-          allow_backward: false,
-          pages: function () {
-            return [
-              `Thanks for trying this memory game. Your final score was ${lastScore}/${totalTrials}. `,
-            ];
-          },
-          show_clickable_nav: true,
-          button_label_next: "Finish",
-        };*/
-
+    //This shows the score of the
     var postVPTInstructions = {
       type: jsPsychHtmlButtonResponse,
-      stimulus: `<p>Thanks for trying this memory game. Your final score was ${lastScore}/${totalTrials}.</p>`,
+      stimulus: function () {
+        return [
+          `<p>Thanks for trying this memory game. Your final score was ${vptScore}/${vptTrialCount}.</p>`,
+        ];
+      },
       choices: [`Next`],
       on_finish: function (data) {
         data.stimulus = "Post-VPT Instructions";
       },
-      data: {},
     };
     /////////////////////////////////////////////////////
     //Attention check for prolific users
-
     var attention_check = {
       type: jsPsychSurveyMultiChoice,
       questions: [
@@ -552,7 +559,6 @@
           passedAttnCheck = true;
         }
       },
-      data: {},
     };
 
     //This loads instructions page 1
@@ -594,20 +600,11 @@
       on_finish: function (data) {
         data.stimulus = "Pretest Instructions";
       },
-      data: {},
     };
 
-    //////////////////////////////////////////////////////
-    //Pre-Test
-    var build_pretest = {
-      type: jsPsychCallFunction,
-      func: function () {
-        console.log("Building Pretest");
-        buildTest("pretest", timeline);
-      },
-      on_load: function () {},
-      on_finish(data) {},
-    };
+    ///////////////////////////////////////////////////////
+    //PRETEST HERE
+    //Just kidding they are added to the timeline at the end using the BuildTest function
 
     //////////////////////////////////////////////////////
     // Background information
@@ -640,7 +637,7 @@
         }
 
         return `<p>Now it's time to start studying.</p><p>On the next screen you'll be presented with a diagram that explains how the biochemistry of a synapse works, which was purposefully designed to be challenging to learn from. It will show how an electrical signal (nerve impulse) is converted into a chemical signal and back again. Try your best to learn all that you can about changes in ion flow and electrical processes.</p> ${conditionInstructions}
-            <p>You will be able to study this diagram for a total of 12 minutes.  A timer will appear on the bottom of the screen.  When you're ready to start, click the 'Begin' button below.</p>`;
+               <p>You will be able to study this diagram for a total of 12 minutes.  A timer will appear on the bottom of the screen.  When you're ready to start, click the 'Begin' button below.</p>`;
       },
       choices: ["Begin"],
       on_finish(data) {
@@ -648,71 +645,39 @@
       },
     };
     //////////////////////////////////////////////////////
-    /* Change the cursor based on condition DO THIS DIRECTLY BEFORE STIMULUS IS SHOWN */
-    var set_cursor = {
-      type: jsPsychCallFunction,
-      func: function () {
-        var href = window.location.href;
-        var dir = href.substring(0, href.lastIndexOf("/")) + "/";
-        console.log("Condition is " + condition);
-
-        switch (condition) {
-          case "Control":
-            //document.body.style.cursor = "none";
-            document.body.style.setProperty(
-              "cursor",
-              `none, pointer`,
-              "important"
-            );
-            break;
-          case "Arrow Cursor":
-            if (os == "Windows") {
-              //document.body.style.cursor = `url('${dir}/img/arrowicon${iconSize}.png'), pointer`;
-              document.body.style.setProperty(
-                "cursor",
-                `url('${dir}/img/arrowicon${iconSize}.png'), pointer`,
-                "important"
-              );
-            } else {
-              //document.body.style.cursor = `url('${dir}/img/arrowiconblack${iconSize}.png'), pointer`;
-              document.body.style.setProperty(
-                "cursor",
-                `url('${dir}/img/arrowiconblack${iconSize}.png'), pointer`,
-                "important"
-              );
-            }
-            break;
-          case "Hand Cursor":
-            //document.body.style.cursor = `url('${dir}/img/handicon${iconSize}.png'), pointer`;
-            document.body.style.setProperty(
-              "cursor",
-              `url('${dir}/img/handicon${iconSize}.png'), pointer`,
-              "important"
-            );
-            document.documentElement.style.setProperty(
-              "cursor",
-              `url('${dir}/img/handicon${iconSize}.png'), pointer`,
-              "important"
-            );
-            break;
-          default:
-          // code block
-        }
-
-        //Observer
-        const observer = new MutationObserver(() => {
-          if (document.body.style.cursor !== cursorURL) {
-            console.log(`Cursor changed to ${document.body.style.cursor}`);
-            document.body.style.cursor = cursorURL;
+    // Change the cursor based on condition
+    function getCursorPath() {
+      console.log(
+        `Participant is ${participantHandedness} handed in getCursorPath()`
+      );
+      var tempCursorPath;
+      switch (condition) {
+        case "Control":
+          tempCursorPath = "none";
+          break;
+        case "Arrow Cursor":
+          if (os == "Windows") {
+            tempCursorPath = `img/arrowicon${iconSize}.png`;
+          } else {
+            tempCursorPath = `img/arrowiconblack${iconSize}.png`;
           }
-        });
-        observer.observe(document.body, {
-          attributes: true,
-          attributeFilter: ["style"],
-        });
-      },
-      data: {},
-    };
+          break;
+        case "Hand Cursor":
+          tempCursorPath = `img/handicon${iconSize}.png`;
+          switch (participantHandedness) {
+            case "Left":
+              tempCursorPath = `img/handiconleft${iconSize}.png`;
+              break;
+            case "Right":
+              tempCursorPath = `img/handicon${iconSize}.png`;
+              break;
+            default:
+          }
+        default:
+        // code block
+      }
+      return tempCursorPath;
+    }
 
     //////////////////////////////////////////////////////
     //Image Study 1
@@ -724,7 +689,24 @@
       },
       choices: ["Continue"],
       trial_duration: imageDisplayDuration * 60 * 1000 + 1,
+      prompt: null,
+
       on_load: function () {
+        //Set Cursor
+        const cursorPath = getCursorPath();
+        console.log(`Setting cursor path dynamically: ${cursorPath}`);
+
+        // Dynamically configure the extension parameters
+        jsPsych.extensions["normalised-mouse-tracking"].on_start({
+          targets: ["#mouse-target"],
+          cursorPath: cursorPath,
+          events: ["mousemove", "mousedown"], // Example events to track
+        });
+
+        console.log(
+          `Participant is ${participantHandedness} handed in imageDisplay on_load`
+        );
+        //Set up image background
         var imageToStudy = "13052025Split.png";
         if (isRetinaDisplay()) {
           imageToStudy = "13052025Split@2x.png";
@@ -733,7 +715,7 @@
         document.getElementsByClassName(
           "stimulus-image"
         )[0].style.backgroundImage = `url('img/${imageToStudy}')`;
-       //console.log(`Browser height is ${window.innerHeight}`);
+        //console.log(`Browser height is ${window.innerHeight}`);
         document.getElementsByClassName("stimulus-image")[0].style.height =
           window.innerHeight;
         document.getElementsByClassName("jspsych-content")[0].style.width =
@@ -752,6 +734,7 @@
           type: jsPsychExtensionNormalisedMouseTracking,
           params: {
             targets: ["#mouse-target"],
+            cursorPath: getCursorPath(),
           },
         },
       ],
@@ -766,10 +749,15 @@
         document.getElementsByClassName(
           "jspsych-content-wrapper"
         )[0].style.overflow = "scroll";
-        document.body.style.cursor = "default";
       },
     };
-
+    //////////////////////////////////////////////////////
+    //This loads instructions regarding mental effort and CL measures
+    var me_instructions = {
+      type: jsPsychHtmlButtonResponse,
+      stimulus: `<p>Thank you for studying those materials.</p><p>Now you will be asked a few questions about how you felt about about your experience studying these materials. The phrasing is slightly different, so be sure to read each question carefully. Click 'Next' to begin.</p>`,
+      choices: ["Next"],
+    };
     //////////////////////////////////////////////////////
     var paas_scale = {
       type: jsPsychSurveyLikert,
@@ -797,14 +785,6 @@
         data.stimulus = "Paas Scale";
         data.rating = data.response.Q0 + 1;
       },
-    };
-    //////////////////////////////////////////////////////
-    //This loads instructions regarding mental effort and CL measures
-    var me_instructions = {
-      type: jsPsychHtmlButtonResponse,
-      stimulus: `<p>Thank you for studying those materials.</p><p>Now you will answer a few questions about how you felt about studying them. Click 'Next' to begin.</p>`,
-      choices: ["Next"],
-      data: {},
     };
 
     //////////////////////////////////////////////////////
@@ -900,6 +880,72 @@
     };
 
     //////////////////////////////////////////////////////
+    //MEL-TS Load and Effort - short version
+    var melts_load_scale = {
+      type: jsPsychSurveyLikert,
+      questions: [
+        {
+          required: true,
+          horizontal: true,
+          prompt: "Working on this activity required effort.",
+          labels: likert_labels,
+        },
+        {
+          required: true,
+          horizontal: true,
+          prompt: "Working on this activity was mentally demanding.",
+          labels: likert_labels,
+        },
+        {
+          required: true,
+          horizontal: true,
+          prompt: "Working on this activity was effortless.",
+          labels: likert_labels,
+        },
+      ],
+      on_finish(data) {
+        data.question_order = null;
+        data.stimulus = "MEL-TS Load Scale";
+        data.rating = Number(
+          (data.response.Q0 + 1 + data.response.Q1 + 1 + data.response.Q2 + 1) /
+            3
+        );
+      },
+    };
+
+    var melts_effort_scale = {
+      type: jsPsychSurveyLikert,
+      questions: [
+        {
+          required: true,
+          horizontal: true,
+          prompt: "I invested effort while working on this activity.",
+          labels: likert_labels,
+        },
+        {
+          required: true,
+          horizontal: true,
+          prompt: "I worked hard on this activity.",
+          labels: likert_labels,
+        },
+        {
+          required: true,
+          horizontal: true,
+          prompt: "I put my heard and soul into working on this activity.",
+          labels: likert_labels,
+        },
+      ],
+      on_finish(data) {
+        data.question_order = null;
+        data.stimulus = "MEL-TS Effort Scale";
+        data.rating = Number(
+          (data.response.Q0 + 1 + data.response.Q1 + 1 + data.response.Q2 + 1) /
+            3
+        );
+      },
+    };
+
+    //////////////////////////////////////////////////////
     //This loads instructions page 1
     var posttest_instructions = {
       type: jsPsychHtmlButtonResponse,
@@ -911,6 +957,55 @@
     //////////////////////////////////////////////////////
     //POSTTESTS HERE
     //Just kidding they are added to the timeline at the end using the BuildTest function
+
+    //////////////////////////////////////////////////////
+    var attentiveness_scale = {
+      type: jsPsychSurveyLikert,
+      questions: [
+        {
+          required: true,
+          horizontal: true,
+          prompt: "How attentive were you during this study?",
+          labels: [
+            "Not at all attentive",
+            "",
+            "Somewhat unattentive",
+            "",
+            "About average",
+            "",
+            "Somewhat attentive",
+            "",
+            "Completely attentive",
+          ],
+        },
+      ],
+      on_finish(data) {
+        data.question_order = null;
+        data.stimulus = "Attentiveness Scale";
+        data.rating = data.response.Q0 + 1;
+      },
+    };
+
+    /////////////////////////////////////// giving subjects the chance to report any technical issues
+    var distractions = {
+      type: jsPsychSurveyText,
+      name: "distractions_query",
+      questions: [
+        {
+          prompt:
+            "In the text field below, please articulate any distractions you encountered while working on this task, whether it be multitasking or unplanned distractions.",
+          rows: 10,
+          columns: 100,
+          required: false,
+          name: "Distractions_report",
+        },
+      ],
+      on_finish: function (data) {
+        data.stimulus = "Distractions";
+        data.questions = null;
+        data.distractions = data.response.Distractions_report;
+      },
+    };
 
     /////////////////////////////////////// giving subjects the chance to report any technical issues
     var tech_issues = {
@@ -984,55 +1079,74 @@
     // timeline.push(conditionSelect);
     //--------------//
     console.log(`Condition is ${condition} from ${source}`);
-    if (source == "none") {
+    if (source == "") {
       timeline.push(no_urlVars);
     } else {
+      //SETUP  -------------------
       timeline.push(preload_assets);
       timeline.push(browser_check);
+      timeline.push(experiment_details);
+
+       //MENTAL EFFORT PHASE-------------------
       timeline.push(info_sheet);
       timeline.push(implied_consent_questionnaire);
       timeline.push(gender);
       timeline.push(age);
+      timeline.push(handedness);
       timeline.push(device);
+
+      
       timeline.push(enter_fullscreen);
+
+       //VPT PHASE-------------------
       timeline.push(practiceVPTInstructions);
       timeline.push(practiceVPT);
       timeline.push(if_node);
       timeline.push(fullVPTInstructions);
       timeline.push(fullVPTTask);
       timeline.push(postVPTInstructions);
+
       //ATTENTION CHECK FOR PROLIFIC USERS
       if (prolific_pid != null) {
         timeline.push(attention_check);
         timeline.push(attn_check_if_node);
       }
-      //---------------------------------
+      //PRE TEST PHASE-------------------
       timeline.push(preTestInstructions);
       buildTest("pretest", timeline); //this calls a few timeline pushes
-      //ATTENTION CHECK FOR PROLIFIC USERS
+
+      // //ATTENTION CHECK FOR PROLIFIC USERS
       if (prolific_pid != null) {
         timeline.push(attention_check);
         timeline.push(attn_check_if_node);
       }
-      //---------------------------------
+
+      //ACQUISITION PHASE-------------------
       timeline.push(background_information);
       timeline.push(study_instructions);
-      timeline.push(set_cursor);
       timeline.push(stimulus_with_countown);
+
+      //MENTAL EFFORT PHASE-------------------
       timeline.push(me_instructions);
       timeline.push(paas_scale);
       timeline.push(klepsch_ICL_scale);
       timeline.push(klepsch_GCL_scale);
       timeline.push(klepsch_ECL_scale);
-      //ATTENTION CHECK FOR PROLIFIC USERS
+      timeline.push(melts_load_scale);
+      timeline.push(melts_effort_scale);
+      // //ATTENTION CHECK FOR PROLIFIC USERS
       if (prolific_pid != null) {
         timeline.push(attention_check);
         timeline.push(attn_check_if_node);
       }
-      //---------------------------------
+      //POST TEST PHASE-------------------
       timeline.push(posttest_instructions);
       buildTest("posttestRecall", timeline);
       buildTest("posttestTransfer", timeline);
+
+       //WRAP UP PHASE-------------------
+      timeline.push(attentiveness_scale);
+      timeline.push(distractions);
       timeline.push(tech_issues);
       timeline.push(save_to_datapipe);
       timeline.push(experiment_over); //Saves to Firebase and redirects after
@@ -1044,7 +1158,7 @@
     //Run the Experiment through DataPipe ========================================================================
 
     async function createExperiment() {
-      if (source == "datapipe") {
+      if (source !== "manual") {
         const pipeCondition = await jsPsychPipe.getCondition("6XhA4WBsXQNS");
         if (pipeCondition == 0) {
           //timeline = condition_1_timeline;
@@ -1059,6 +1173,8 @@
           condition = "Hand Cursor";
         }
         console.log(`Condition is ${condition} from ${source}.`);
+        // thisCursorPath = "img/handicon32.png";
+        // console.log(`Cursor Path is ${thisCursorPath} in handedness.`);
       }
       jsPsych.run(timeline);
     }

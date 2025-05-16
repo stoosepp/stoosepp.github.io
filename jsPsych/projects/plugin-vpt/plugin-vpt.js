@@ -164,41 +164,55 @@ var jsPsychVPT = (function (jspsych) {
     } else {
       //Deal with version choice here
       if (version == "chupouw") {
+        //This should show a total of X trials.
         current_grid.level = 5;
         current_grid.trial = 1;
         last_grid.level = 11;
         last_grid.trial = 5;
       }
+      else if (version == "demo") {
+        //This should show a total of 5 trials.
+        current_grid.level = 5;
+        current_grid.trial = 1;
+        last_grid.level = 5;
+        last_grid.trial = 5;
+      }
     }
     //Add the initial Grid
-    const initalGrid = Object.create(grid);
-    initalGrid.level = current_grid.level;
-    initalGrid.trial = current_grid.trial;
-    gridArray.push(initalGrid);
-    //console.log("grid array currently looks like this " + JSON.stringify(gridArray));
-    //Add Remaining Grids
-    while (
-      current_grid.level < last_grid.level &&
-      current_grid.trial <= last_grid.trial
-    ) {
+    // const initalGrid = Object.create(grid);
+    // initalGrid.level = current_grid.level;
+    // initalGrid.trial = current_grid.trial;
+    // gridArray.push(initalGrid);
+
+    
+    //Populate Grid Array
+    while ((current_grid.level <= last_grid.level)){
+      const newGrid = Object.create(grid);
+      newGrid.level = current_grid.level;
+      newGrid.trial = current_grid.trial;
+      gridArray.push(newGrid);
+
+       if ((current_grid.level == last_grid.level) && (current_grid.trial == last_grid.trial)){
+        break;
+      }
       if (practice) {
         //console.log("Practice");
         current_grid.level++;
         current_grid.trial = 1;
       } else {
-        if (version == "chupouw") {
+        //if ((version == "chupouw") || version == "demo")) {
           current_grid.trial++;
           if (current_grid.trial > 5) {
             current_grid.trial = 1;
             current_grid.level++;
           }
-        }
+       // }
       }
-      const newGrid = Object.create(grid);
-      newGrid.level = current_grid.level;
-      newGrid.trial = current_grid.trial;
-      gridArray.push(newGrid);
+     
+      console.log("Grid Array " + JSON.stringify(gridArray));
+      
     }
+
     return gridArray;
   }
 
@@ -371,12 +385,12 @@ var jsPsychVPT = (function (jspsych) {
     //Set Scores
     var trial_data = {
       grid_data: gridData,
-      vpt_total_trials: trial.vpt_total_trials,
-      vpt_total_score: trial.vpt_total_score,
-      vpt_chupouw_score: trial.vpt_total_score / trial.vpt_total_trials, // Grabs the score defined in the info const. Score is the proportion of correct trials for all trials
-      vpt_dellasala_score: trial.vpt_dellasala_score, // Grabs the score defined in the info const. Score is the highest number of correctly filled boxes in the most complex grid.
+      total_trials: trial.total_trials,
+      total_score: trial.total_score,
+      chupouw_score: Number(trial.total_score / trial.total_trials), // Grabs the score defined in the info const. Score is the proportion of correct trials for all trials
+      dellasala_score: trial.dellasala_score, // Grabs the score defined in the info const. Score is the highest number of correctly filled boxes in the most complex grid.
     };
-    //console.log(trial_data);
+
     // clear the display
     display_element.innerHTML = "";
     // end trial
@@ -509,10 +523,10 @@ var jsPsychVPT = (function (jspsych) {
         default: "chupouw",
         description: `There are a few implementations of the VPT to choose from, this plugin uses the computer-based method from  Chu et al., 2013; Pouw et al., 2016 
 		Chu et al., 2013; Pouw et al., 2016.
-		This is a computer-based version adapted from Della Sala et al., 1997. This is comprised of 2 easy practice grids and, then 5 trials for each level of complexity ranging from 7 black blocks to 11 black blocks. The scoring convention in these papers was the proportion of correct trials for all trials, which will be generated as vpt_chupouw_score.
+		This is a computer-based version adapted from Della Sala et al., 1997. This is comprised of 2 easy practice grids and, then 5 trials for each level of complexity ranging from 7 black blocks to 11 black blocks. The scoring convention in these papers was the proportion of correct trials for all trials, which will be generated as chupouw_score.
 
 		Della Sala et al., 1997
-		Use the original task from Della Sala et al., 1997. Couldn't find this original source, so it's based upon descriptions in Della Sala et al., 1999. This is comprised of 2 easy practice grids and, then 3 trials for each level from a matrix of 2x2 all the way up to 5x6, with half the boxes in each grid filled each time. Participants are given 3 sections to look at each grid, then they are reset for the participant to fill in and match. The final score is the number of filled cells in the most complex pattern recalled, which will be generated as vpt_dellasala_score.
+		Use the original task from Della Sala et al., 1997. Couldn't find this original source, so it's based upon descriptions in Della Sala et al., 1999. This is comprised of 2 easy practice grids and, then 3 trials for each level from a matrix of 2x2 all the way up to 5x6, with half the boxes in each grid filled each time. Participants are given 3 sections to look at each grid, then they are reset for the participant to fill in and match. The final score is the number of filled cells in the most complex pattern recalled, which will be generated as dellasala_score.
 	`,
       },
       practice: {
@@ -535,19 +549,19 @@ var jsPsychVPT = (function (jspsych) {
     },
     data: {
       /** Number of Correct Answers in total for the whole trial*/
-      vpt_total_score: {
+      total_score: {
         type: jspsych.ParameterType.INT,
       },
       /** The total number of trials run */
-      vpt_total_trials: {
+      total_trials: {
         type: jspsych.ParameterType.INT,
       },
       /** Score outlined in Chu et al., 2013; Pouw et al., 2016 as the proportion of correct trial reponses for all trials. */
-      vpt_chupouw_score: {
+      chupouw_score: {
         type: jspsych.ParameterType.FLOAT,
       },
       /** Score outlined in Della Sala et al. 1997 as the highest number of correctly filled boxes in the most complex grid. */
-      vpt_dellasala_score: {
+      dellasala_score: {
         type: jspsych.ParameterType.INT,
       },
       grid_data: {
@@ -600,8 +614,8 @@ var jsPsychVPT = (function (jspsych) {
  */
     trial(display_element, trial) {
       //Setup Local Variables
-      trial.vpt_total_score = 0;
-      trial.vpt_total_trials = 0;
+      trial.total_score = 0;
+      trial.total_trials = 0;
       var current_grid_index = 0;
       var correctTileIDs = [];
 
@@ -616,7 +630,8 @@ var jsPsychVPT = (function (jspsych) {
 
       //2. Create Array of Grids
       var gridArray = populateGridArray(trial.practice, trial.version);
-      //console.log("grid " + JSON.stringify(gridArray));
+      trial.total_trials = gridArray.length;
+      console.log(`There are ${trial.total_trials} grids to play.`);
 
       //3. Run First Grid
       var startTime = performance.now();
@@ -653,9 +668,9 @@ var jsPsychVPT = (function (jspsych) {
           correct = false;
         }
         if (correct == true) {
-          trial.vpt_total_score++;
+          trial.total_score++;
         }
-        //console.log(`Total score: ${trial.vpt_total_score}`);
+        //console.log(`Total score: ${trial.total_score}`);
         //Set Della Sala score if on most complex grid.
 
         const last_level = gridArray[gridArray.length - 1].level;
@@ -674,7 +689,7 @@ var jsPsychVPT = (function (jspsych) {
               correctTileCount++;
             }
           });
-          trial.vpt_dellasala_score = correctTileCount;
+          trial.dellasala_score = correctTileCount;
           console.log(`Correct tiles count: ${correctTileCount}`);
         }
         if (isPractice == false) {
@@ -689,13 +704,15 @@ var jsPsychVPT = (function (jspsych) {
             grid_rt: rt,
             correct: correct,
           });
+          console.log(`gridData contains ${gridData.length} entries.`);
         }
 
         //Setup next grid...or don't
         startTime = performance.now();
-        //console.log("Is correct? " + correct + 'Total score is ' + trial.vpt_total_score);
+        console.log(
+          `Current Score is ${trial.total_score}/${trial.total_trials}`
+        );
         current_grid_index++;
-        trial.vpt_total_trials++;
         if (current_grid_index > gridArray.length - 1) {
           end_trial(display_element, trial);
         } else {
