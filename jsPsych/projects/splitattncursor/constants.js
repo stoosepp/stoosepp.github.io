@@ -39,7 +39,7 @@ https://www.une.edu.au/about-une/faculty-of-humanities-arts-social-sciences-and-
     <h3>Information Sheet for Participants</h3>
     <h2>EFFECTIVE STRATEGIES FOR LEARNING FROM COMPLEX MATERIALS.</h2>
            
-           <div id="HREC-approval"><strong>Approval:</strong> This project has been approved by the Human Research Ethics Committee of the University of New England (Approval No………., Valid to ../../….).</div>
+           <div id="HREC-approval"><strong>Approval:</strong> This project has been approved by the Human Research Ethics Committee of the University of New England (Approval No. HE-2025-2232-2756., Valid to 18/03/2026).</div>
     <h3>What is the purpose of this Research?</h3>
     <p>The research aims to explore effective strategies for studying complex materials in an online environment. </p>
     <h3>What am I expected to do if I volunteer to participate?</h3>
