@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Split Attention Cursors</title>
+    <!-- <title>Split Attention Cursors</title> -->
+     <title>Synapse Study</title>
     <!-- Import  JSPsych Foundation from LOCAL -->
     <script src="../../dist/jspsych.js"></script>
     <link href="../../dist/jspsych.css" rel="stylesheet" type="text/css" />
@@ -35,6 +36,7 @@
 
     <!-- Import CUSTOM PLUGINS Plugins-->
     <script src="../plugin-vpt/plugin-vpt.js"></script>
+      <script src="../plugin-window-resize/plugin-window-resize.js"></script>
 
     <!-- Import CUSTOM EXTENSIONS -->
     <script src="../extension-normalised-mouse-tracking/extension-normalised-mouse-tracking.js"></script>
@@ -264,22 +266,22 @@
 
     //////////////////////////////////////////////////////
     /* DEMO Condition Selection
-           var conditionSelect = {
-             type: jsPsychSurveyMultiChoice,
-             questions: [
-               {
-                 prompt: `<p><b>This study is in DEMO mode. <br> Select a condition from the choices below.</b></p>`,
-                 name: "selectedCondition",
-                 options: ["Control", "Arrow Cursor", "Hand Cursor"],
-                 required: true,
-               },
-             ],
-             on_finish: function (data) {
-               (condition = data.response.selectedCondition), console.log(condition);
-             },
-           };
+               var conditionSelect = {
+                 type: jsPsychSurveyMultiChoice,
+                 questions: [
+                   {
+                     prompt: `<p><b>This study is in DEMO mode. <br> Select a condition from the choices below.</b></p>`,
+                     name: "selectedCondition",
+                     options: ["Control", "Arrow Cursor", "Hand Cursor"],
+                     required: true,
+                   },
+                 ],
+                 on_finish: function (data) {
+                   (condition = data.response.selectedCondition), console.log(condition);
+                 },
+               };
 
-           */
+               */
 
     //////////////////////////////////////////////////////
     //Deal with no URL variables
@@ -424,7 +426,20 @@
     };
 
     //////////////////////////////////////////////////////
+    
+    // Enlarge Screen
+    var enlarge_screen = {
+      type: jsPsychWindowResize,
+      min_width: 1200-50,
+      min_height: 800-50,
+      imgURL:'dummy.png',
+      message:
+        "<p>To ensure the experiment is run correctly, it needs to run as large as possible on your screen.<br />Please enlarge your browser window to its largest size so that you can read this placeholder latin text, and keep it at that size for the duration of the experiment.</p><p> It must be at least {w}x{h} pixels to continue.</p>",
+    };
+
+    //////////////////////////////////////////////////////
     //Enter Full Screen Mode
+    /*
     var enter_fullscreen = {
       type: jsPsychFullscreen,
       message: `<p> To ensure the experiment is run correctly, it needs to run in full screen mode in your browser.</p> <p><strong>Please avoid pressing the 'esc' key while in full-screen mode as the experiment may be disrupted.</strong></p><p> Click the button below to continue. </p>`,
@@ -434,12 +449,13 @@
         should_be_in_fullscreen = true; // once this trial starts, the participant should be in fullscreen
       },
     };
+    */
 
     //////////////////////////////////////////////////////
     //This loads instructions page 1
     var practiceVPTInstructions = {
       type: jsPsychHtmlButtonResponse,
-      stimulus: `<p>In this part of the experiment you'll play a matching game. You will be presented with a grid of white boxes with some black boxes filled in.</p><p> Each grid will be shown for 3 seconds, then will go blank. Using your mouse or trackpad, it's your job to click the squares in the grid to copy the grid pattern you just saw by clicking on the blank squares to change their colour.</p><p> Let's practice. The first grid will appear as soon as you click the 'Next' button. When you're ready to go, click Next.</p>`,
+      stimulus: `<p>In the first part of the study, you will play a matching game. You will be presented with a grid of white boxes with some black boxes filled in.</p><p> Each grid will be shown for 3 seconds, then will go blank. Using your mouse or trackpad, it's your job to click the squares in the grid to copy the grid pattern you just saw by clicking on the blank squares to change their colour.</p><p> Let's practice with 2 easy grids. The first grid will appear as soon as you click the 'Next' button. When you're ready to go, click Next.</p>`,
       choices: [`Next.`],
       on_finish: function (data) {
         data.stimulus = "Practice VPT Instructions";
@@ -616,7 +632,7 @@
         console.log("Background Info Finished Loading.");
       },
     };
-    //////////////////////////////////////////////////////
+
     // Show instructions (based on condition what the participant needs to do
     var study_instructions = {
       type: jsPsychHtmlButtonResponse,
@@ -624,20 +640,20 @@
         var conditionInstructions = "";
         switch (condition) {
           case "Control":
-            conditionInstructions = `<p>strong>While you study, please rest your hands on your desk or on your lap and DO NOT use your hands or fingers to point at elements on the screen to help you. Please use only your eyes to make a link between the text and associated parts of the diagram. </strong></p>`;
+            conditionInstructions = `<p>strong>While you study, please rest your hands on your desk or on your lap or desk and DO NOT use your hands or fingers to point at elements on the screen to help you. Please use only your eyes to help you understand the connection between the text and associated parts of the diagram. </strong></p>`;
             break;
           case "Arrow Cursor":
-            conditionInstructions = `<p><strong>Your cursor will take the form of an arrow. While you study, please use your cursor to make a link between the text and associated parts of the diagram. Please DO NOT use your hands and fingers to point at elements on the screen. </strong></p>`;
+            conditionInstructions = `<p><strong>Your cursor will take the form of an arrow. While you study, please use your cursor to help you understand the connection between the text and associated parts of the diagram. Please DO NOT use your hands and fingers to point at elements on the screen. </strong></p>`;
             break;
           case "Hand Cursor":
-            conditionInstructions = `<p><strong>Your cursor will take the form of a hand icon. While you study, please use your cursor to make a link between the text and associated parts of the diagram. Please DO NOT use your hands and fingers to point at elements on the screen. </strong></p>`;
+            conditionInstructions = `<p><strong>Your cursor will take the form of a hand icon. While you study, please use your cursor to help you understand the connection between the text and associated parts of the diagram. Please DO NOT use your hands and fingers to point at elements on the screen. </strong></p>`;
             break;
           default:
           // code block
         }
 
-        return `<p>Now it's time to start studying.</p><p>On the next screen you'll be presented with a diagram that explains how the biochemistry of a synapse works, which was purposefully designed to be challenging to learn from. It will show how an electrical signal (nerve impulse) is converted into a chemical signal and back again. Try your best to learn all that you can about changes in ion flow and electrical processes.</p> ${conditionInstructions}
-               <p>You will be able to study this diagram for a total of 12 minutes.  A timer will appear on the bottom of the screen.  When you're ready to start, click the 'Begin' button below.</p>`;
+        return `<p>Now it's time to start studying.</p><p>On the next screen you'll be presented with a diagram that explains how the biochemistry of a synapse works, which was purposefully designed to be challenging to learn from. It will show how an electrical signal (nerve impulse) is converted into a chemical signal and back again. Try your best to learn all that you can about changes in ion flow and electrical processes.</p><p><strong>Please do not take notes, but try to remember as much as you can using your mind alone.</strong></p> ${conditionInstructions}
+                   <p>You will be able to study this diagram for a total of 10 minutes.  A timer will appear on the bottom of the screen.  When you're ready to start, click the 'Begin' button below.</p>`;
       },
       choices: ["Begin"],
       on_finish(data) {
@@ -646,95 +662,96 @@
     };
     //////////////////////////////////////////////////////
     // Change the cursor based on condition
-    function getCursorPath() {
+    function getCursor() {
       console.log(
         `Participant is ${participantHandedness} handed in getCursorPath()`
       );
-      var tempCursorPath;
+      var condCursor;
       switch (condition) {
         case "Control":
-          tempCursorPath = "none";
+          condCursor = "none";
           break;
         case "Arrow Cursor":
           if (os == "Windows") {
-            tempCursorPath = `img/arrowicon${iconSize}.png`;
+            condCursor = `url('img/arrowicon${iconSize}.png')`;
           } else {
-            tempCursorPath = `img/arrowiconblack${iconSize}.png`;
+            condCursor = `url('img/arrowiconblack${iconSize}.png')`;
           }
           break;
         case "Hand Cursor":
-          tempCursorPath = `img/handicon${iconSize}.png`;
+          condCursor = `url('img/handicon${iconSize}.png')`;
           switch (participantHandedness) {
             case "Left":
-              tempCursorPath = `img/handiconleft${iconSize}.png`;
+              condCursor = `img/handiconleft${iconSize}.png')`;
               break;
             case "Right":
-              tempCursorPath = `img/handicon${iconSize}.png`;
+              condCursor = `url('img/handicon${iconSize}.png')`;
               break;
             default:
           }
         default:
         // code block
       }
-      return tempCursorPath;
+      return condCursor;
     }
 
     //////////////////////////////////////////////////////
     //Image Study 1
-    const imageDisplayDuration = 12; //Duration to show image in minutes
+    const imageDisplayDuration = 10; //Duration to show image in minutes
     var stimulus_with_countown = {
       type: jsPsychHtmlButtonResponse,
       stimulus: function () {
-        return `<div class="stimulus-image" id="mouse-target" style="height:${window.innerHeight}px;"></div><div id="clock">${imageDisplayDuration}:00</div>`;
+        //Get Cursor
+        const condCursor = getCursor();//Calls cursor function
+        console.log(`Cursor in stimulus is ${condCursor}`);
+        var imageToStudy = "23062025Split.png";
+        if (isRetinaDisplay()) {
+          imageToStudy = "23062025Split@2x.png";
+        }
+
+        // 2. Add your CSS rules as a string
+
+        //Set content width and appropriate cursor
+        const theContent =
+          document.getElementsByClassName("jspsych-content")[0];
+        theContent.style.width = "100%";
+        theContent.style.maxWidth = "100%";
+        theContent.style.cursor = `${condCursor},none`;
+
+        return [
+          `<div class="stimulus-image" id="mouse-target" style="height:${window.innerHeight}px;"><img src="img/${imageToStudy}" /></div><div id="clock">${imageDisplayDuration}:00</div>`,
+        ];
       },
       choices: ["Continue"],
       trial_duration: imageDisplayDuration * 60 * 1000 + 1,
       prompt: null,
 
       on_load: function () {
-        //Set Cursor
-        const cursorPath = getCursorPath();
-        console.log(`Setting cursor path dynamically: ${cursorPath}`);
+        //Remove Button
+        const element = document.getElementById(
+          "jspsych-html-button-response-btngroup"
+        );
+        console.log(element);
+        element.remove();
+
+        //Run Countdown
+        countdown(imageDisplayDuration, 1000);
 
         // Dynamically configure the extension parameters
-        jsPsych.extensions["normalised-mouse-tracking"].on_start({
+        /*jsPsych.extensions["normalised-mouse-tracking"].on_start({
           targets: ["#mouse-target"],
-          cursorPath: cursorPath,
           events: ["mousemove", "mousedown"], // Example events to track
-        });
+        });*/
 
-        console.log(
-          `Participant is ${participantHandedness} handed in imageDisplay on_load`
-        );
-        //Set up image background
-        var imageToStudy = "13052025Split.png";
-        if (isRetinaDisplay()) {
-          imageToStudy = "13052025Split@2x.png";
-        }
-        //Set image container for size of screen
-        document.getElementsByClassName(
-          "stimulus-image"
-        )[0].style.backgroundImage = `url('img/${imageToStudy}')`;
-        //console.log(`Browser height is ${window.innerHeight}`);
-        document.getElementsByClassName("stimulus-image")[0].style.height =
-          window.innerHeight;
-        document.getElementsByClassName("jspsych-content")[0].style.width =
-          "100%";
-        document.getElementsByClassName("jspsych-content")[0].style.maxWidth =
-          "100%";
-        document.getElementsByClassName(
-          "jspsych-content-wrapper"
-        )[0].style.overflow = "hidden";
-
-        //Start timer
-        countdown(imageDisplayDuration, 1000);
+        // console.log(
+        //   `Participant is ${participantHandedness} handed in imageDisplay on_load`
+        // );
       },
       extensions: [
         {
           type: jsPsychExtensionNormalisedMouseTracking,
           params: {
             targets: ["#mouse-target"],
-            cursorPath: getCursorPath(),
           },
         },
       ],
@@ -742,13 +759,11 @@
         task: "draw",
       },
       on_finish: function (data) {
-        document.getElementsByClassName("jspsych-content")[0].style.maxWidth =
-          "80%";
-        document.getElementsByClassName("jspsych-content")[0].style.width =
-          null;
-        document.getElementsByClassName(
-          "jspsych-content-wrapper"
-        )[0].style.overflow = "scroll";
+        const theContent =
+          document.getElementsByClassName("jspsych-content")[0];
+        theContent.style.maxWidth = "80%";
+        theContent.style.width = null;
+        theContent.style.cursor = `default`;//Reset the cursor
       },
     };
     //////////////////////////////////////////////////////
@@ -931,7 +946,7 @@
         {
           required: true,
           horizontal: true,
-          prompt: "I put my heard and soul into working on this activity.",
+          prompt: "I put my t and soul into working on this activity.",
           labels: likert_labels,
         },
       ],
@@ -1047,7 +1062,7 @@
 
       // Save data to Firestore
       return db
-        .collection("experiment_data") // Replace "experiment_data" with your desired collection name
+        .collection("splitattncursors") // Replace "experiment_data" with your desired collection name
         .doc(subj_code) // Use the participant's subject code as the document ID
         .set({
           timestamp: timestamp, // Add a timestamp for reference
@@ -1087,18 +1102,22 @@
       timeline.push(browser_check);
       timeline.push(experiment_details);
 
-       //MENTAL EFFORT PHASE-------------------
-      timeline.push(info_sheet);
+      //INTRO PHASE-------------------
+       timeline.push(info_sheet);
       timeline.push(implied_consent_questionnaire);
+
+       //SET SCREEN SIZE-------------------
+      timeline.push(enlarge_screen);
+      //timeline.push(enter_fullscreen);
+
+      //DEMOGRAPHICS PHASE-------------------
       timeline.push(gender);
       timeline.push(age);
       timeline.push(handedness);
       timeline.push(device);
 
-      
-      timeline.push(enter_fullscreen);
 
-       //VPT PHASE-------------------
+      //VPT PHASE-------------------
       timeline.push(practiceVPTInstructions);
       timeline.push(practiceVPT);
       timeline.push(if_node);
@@ -1134,7 +1153,8 @@
       timeline.push(klepsch_ECL_scale);
       timeline.push(melts_load_scale);
       timeline.push(melts_effort_scale);
-      // //ATTENTION CHECK FOR PROLIFIC USERS
+
+      //ATTENTION CHECK FOR PROLIFIC USERS
       if (prolific_pid != null) {
         timeline.push(attention_check);
         timeline.push(attn_check_if_node);
@@ -1144,7 +1164,7 @@
       buildTest("posttestRecall", timeline);
       buildTest("posttestTransfer", timeline);
 
-       //WRAP UP PHASE-------------------
+      //WRAP UP PHASE-------------------
       timeline.push(attentiveness_scale);
       timeline.push(distractions);
       timeline.push(tech_issues);
