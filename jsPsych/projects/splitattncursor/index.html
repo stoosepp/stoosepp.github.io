@@ -494,7 +494,7 @@
     var loop = {
       timeline: [tryAgain, practiceVPTInstructions, practiceVPT],
       loop_function: function () {
-        currentColour = colours[randomIntFromInterval(0, colours.length - 1)];
+        
         if ((passedPracticeGrids = false)) {
           return true;
         } else {
@@ -562,7 +562,7 @@
       type: jsPsychSurveyMultiChoice,
       questions: [
         {
-          prompt: `<p>This is an attention check.</p> <p>The colour is ${currentColour}`,
+          prompt: `<p>This is an attention check.</p> <p>The colour is ${currentColour}. What color is it?`,
           name: "selectedColor",
           options: colours,
           randomize_question_order: true,
@@ -588,6 +588,7 @@
     var attn_loop = {
       timeline: [attnTryAgain, attention_check],
       loop_function: function () {
+        currentColour = colours[randomIntFromInterval(0, colours.length - 1)];
         if ((passedAttnCheck = false)) {
           return true;
         } else {
@@ -946,7 +947,7 @@
         {
           required: true,
           horizontal: true,
-          prompt: "I put my t and soul into working on this activity.",
+          prompt: "I put my heart and soul into working on this activity.",
           labels: likert_labels,
         },
       ],
@@ -1103,7 +1104,7 @@
       timeline.push(experiment_details);
 
       //INTRO PHASE-------------------
-       timeline.push(info_sheet);
+      timeline.push(info_sheet);
       timeline.push(implied_consent_questionnaire);
 
        //SET SCREEN SIZE-------------------

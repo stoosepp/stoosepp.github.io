@@ -121,7 +121,7 @@ function buildTest(testName, timeline) {
     
      }
     }`);
-    console.log(`Pushing ${testName}Q${i + 1} to Testbed`);
+   // console.log(`Pushing ${testName}Q${i + 1} to Testbed`);
     timeline.push(eval(`${testName}Q${i + 1}`));
     //finalQuestionArray.push(eval(`${testName}Q${i + 1}`));
   }
