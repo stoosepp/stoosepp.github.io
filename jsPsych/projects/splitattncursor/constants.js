@@ -18,7 +18,7 @@ const TEMPLATE_CONTENT = {
            <li>I am 18 years of age or older.</li>
            <li>In preservation of anonymity, I understand that no name or signature is required of me to give consent in this online setting. By clicking the button below, I am agreeing to the above and also to participate in this study.</li>
            </ul>
-           <p><strong>REMINDER:</strong> This experiment will take approximately 45 minutes to complete.</p>
+           <p><strong>REMINDER:</strong> This experiment will take approximately 30-40 minutes to complete.</p>
            </div>`,
   info_sheet: ` <div class="info-sheet"><p>
            <div class="flex">
@@ -43,7 +43,7 @@ https://www.une.edu.au/about-une/faculty-of-humanities-arts-social-sciences-and-
     <h3>What is the purpose of this Research?</h3>
     <p>The research aims to explore effective strategies for studying complex materials in an online environment. </p>
     <h3>What am I expected to do if I volunteer to participate?</h3>
-    <p>If you volunteer to be included in this study, you'll be asked to complete an experiment that will take approximately 45 minutes to complete. As part of this experiment you'll be asked to complete a cogntive test in the form of a game, complete a short pre-test, then study some complex learning materials for about 12 minutes, then complete a test to see what you learned.</p>
+    <p>If you volunteer to be included in this study, you'll be asked to complete an experiment that will take approximately 30-40 minutes to complete. As part of this experiment you'll be asked to complete a cogntive test in the form of a game, complete a short pre-test, then study some complex learning materials for about 10 minutes, then complete a test to see what you learned.</p>
     
     <h3>Who are the Researchers?</h3>
      <p>Please contact any of the following researchers, should you have any questions about this study.</p>
