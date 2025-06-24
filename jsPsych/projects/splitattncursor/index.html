@@ -2,7 +2,7 @@
 <html>
   <head>
     <!-- <title>Split Attention Cursors</title> -->
-     <title>Synapse Study</title>
+    <title>Synapse Study</title>
     <!-- Import  JSPsych Foundation from LOCAL -->
     <script src="../../dist/jspsych.js"></script>
     <link href="../../dist/jspsych.css" rel="stylesheet" type="text/css" />
@@ -36,7 +36,7 @@
 
     <!-- Import CUSTOM PLUGINS Plugins-->
     <script src="../plugin-vpt/plugin-vpt.js"></script>
-      <script src="../plugin-window-resize/plugin-window-resize.js"></script>
+    <script src="../plugin-window-resize/plugin-window-resize.js"></script>
 
     <!-- Import CUSTOM EXTENSIONS -->
     <script src="../extension-normalised-mouse-tracking/extension-normalised-mouse-tracking.js"></script>
@@ -110,6 +110,7 @@
 
     var passedPracticeGrids = false;
     var passedAttnCheck = false;
+    var passedBrowserCheck = false;
     var vptScore = 0;
     var vptTrialCount = 0;
 
@@ -172,26 +173,24 @@
       ],
       on_finish: function () {
         console.log(`Experiment is DONE!`);
-
-        //----ONLY USE WHEN IN DEVELOPMENT---//
-
-        //----------------------------------//
-        saveToFirebase()
-          .then(() => {
-            console.log("Firebase save complete. Proceeding to next step...");
-            if (prolific_pid != null) {
-              window.location =
-                "https://app.prolific.co/submissions/complete?cc=136BDB5F";
-            } else {
-              window.location = "http://www.une.edu.au/";
-            }
-          })
-          .catch((error) => {
-            console.error("Failed to save data to Firebase:", error);
-            alert(
-              "An error occurred while saving your data. Please try again."
-            );
-          });
+        if (passedBrowserCheck == true) {
+          saveToFirebase()
+            .then(() => {
+              console.log("Firebase save complete. Proceeding to next step...");
+              if (prolific_pid != null) {
+                window.location =
+                  "https://app.prolific.co/submissions/complete?cc=136BDB5F";
+              } else {
+                window.location = "http://www.une.edu.au/";
+              }
+            })
+            .catch((error) => {
+              console.error("Failed to save data to Firebase:", error);
+              alert(
+                "An error occurred while saving your data. Please try again."
+              );
+            });
+        }
       },
     });
 
@@ -220,9 +219,6 @@
       source = "une_psych";
     }
 
-    //const condNum = jsPsych.data.getURLVariable("condNum");
-    //const datapipe = jsPsych.data.getURLVariable("true");
-
     //////////////////////////////////////////////////////
     //Make Participant ID and add to Experiment's dataset
     subj_code = createParticipantID(12); // generate the actual code (12 strings)
@@ -250,38 +246,71 @@
 
     //////////////////////////////////////////////////////
     //Get Browser Details
+    /*
+        var browser_check = {
+          type: jsPsychBrowserCheck,
+          inclusion_function: (data) => {
+            console.log("Browser is ",data.browser);
+            return data.browser == "chrome" && data.mobile === false;
+          },
+          exclusion_message: (data) => {
+            console.log("Browser is ",data.browser);
+            if (data.mobile) {
+              return "<p>You must use a desktop/laptop computer to participate in this experiment.</p>";
+            } else if (data.browser !== "chrome" || data.browser !== "firefox") {
+              return "<p>You must use Chrome or Firefox as your browser to complete this experiment.</p>";
+            }
+          },
+        };*/
     var browser_check = {
       type: jsPsychBrowserCheck,
       inclusion_function: (data) => {
-        return data.browser == "chrome" && data.mobile === false;
+        return (
+          (data.mobile === false && data.browser == "chrome") ||
+          (data.mobile === false && data.browser == "firefox")
+        );
       },
       exclusion_message: (data) => {
         if (data.mobile) {
-          return "<p>You must use a desktop/laptop computer to participate in this experiment.</p>";
-        } else if (data.browser !== "chrome" || data.browser !== "firefox") {
-          return "<p>You must use Chrome or Firefox as your browser to complete this experiment.</p>";
+          return `<p>You must use a desktop/laptop computer to participate in this experiment.</p><p>Please close this window and return when you're ready.</p>`;
+        }
+        if (data.browser !== "chrome" || data.browser !== "firefox") {
+          return `<p>You must use Chrome or Firefox as your browser to complete this experiment.</p><p>Please close this window and return when you're ready.</p>`;
+        }
+      },
+      on_finish: function (data) {
+        if (
+          data.mobile === false &&
+          (data.browser == "chrome" || data.browser == "firefox")
+        ) {
+          passedBrowserCheck = true;
+        }
+        else{
+          console.log('Browser not compliant');
         }
       },
     };
 
+
+
     //////////////////////////////////////////////////////
     /* DEMO Condition Selection
-               var conditionSelect = {
-                 type: jsPsychSurveyMultiChoice,
-                 questions: [
-                   {
-                     prompt: `<p><b>This study is in DEMO mode. <br> Select a condition from the choices below.</b></p>`,
-                     name: "selectedCondition",
-                     options: ["Control", "Arrow Cursor", "Hand Cursor"],
-                     required: true,
-                   },
-                 ],
-                 on_finish: function (data) {
-                   (condition = data.response.selectedCondition), console.log(condition);
-                 },
-               };
+                   var conditionSelect = {
+                     type: jsPsychSurveyMultiChoice,
+                     questions: [
+                       {
+                         prompt: `<p><b>This study is in DEMO mode. <br> Select a condition from the choices below.</b></p>`,
+                         name: "selectedCondition",
+                         options: ["Control", "Arrow Cursor", "Hand Cursor"],
+                         required: true,
+                       },
+                     ],
+                     on_finish: function (data) {
+                       (condition = data.response.selectedCondition), console.log(condition);
+                     },
+                   };
 
-               */
+                   */
 
     //////////////////////////////////////////////////////
     //Deal with no URL variables
@@ -426,13 +455,13 @@
     };
 
     //////////////////////////////////////////////////////
-    
+
     // Enlarge Screen
     var enlarge_screen = {
       type: jsPsychWindowResize,
-      min_width: 1200-50,
-      min_height: 800-50,
-      imgURL:'dummy.png',
+      min_width: 1200 - 50,
+      min_height: 800 - 50,
+      imgURL: "dummy.png",
       message:
         "<p>To ensure the experiment is run correctly, it needs to run as large as possible on your screen.<br />Please enlarge your browser window to its largest size so that you can read this placeholder latin text, and keep it at that size for the duration of the experiment.</p><p> It must be at least {w}x{h} pixels to continue.</p>",
     };
@@ -440,16 +469,16 @@
     //////////////////////////////////////////////////////
     //Enter Full Screen Mode
     /*
-    var enter_fullscreen = {
-      type: jsPsychFullscreen,
-      message: `<p> To ensure the experiment is run correctly, it needs to run in full screen mode in your browser.</p> <p><strong>Please avoid pressing the 'esc' key while in full-screen mode as the experiment may be disrupted.</strong></p><p> Click the button below to continue. </p>`,
-      button_label: `Enter Full Screen`,
-      fullscreen_mode: true,
-      on_start: function () {
-        should_be_in_fullscreen = true; // once this trial starts, the participant should be in fullscreen
-      },
-    };
-    */
+        var enter_fullscreen = {
+          type: jsPsychFullscreen,
+          message: `<p> To ensure the experiment is run correctly, it needs to run in full screen mode in your browser.</p> <p><strong>Please avoid pressing the 'esc' key while in full-screen mode as the experiment may be disrupted.</strong></p><p> Click the button below to continue. </p>`,
+          button_label: `Enter Full Screen`,
+          fullscreen_mode: true,
+          on_start: function () {
+            should_be_in_fullscreen = true; // once this trial starts, the participant should be in fullscreen
+          },
+        };
+        */
 
     //////////////////////////////////////////////////////
     //This loads instructions page 1
@@ -494,7 +523,6 @@
     var loop = {
       timeline: [tryAgain, practiceVPTInstructions, practiceVPT],
       loop_function: function () {
-        
         if ((passedPracticeGrids = false)) {
           return true;
         } else {
@@ -654,7 +682,7 @@
         }
 
         return `<p>Now it's time to start studying.</p><p>On the next screen you'll be presented with a diagram that explains how the biochemistry of a synapse works, which was purposefully designed to be challenging to learn from. It will show how an electrical signal (nerve impulse) is converted into a chemical signal and back again. Try your best to learn all that you can about changes in ion flow and electrical processes.</p><p><strong>Please do not take notes, but try to remember as much as you can using your mind alone.</strong></p> ${conditionInstructions}
-                   <p>You will be able to study this diagram for a total of 10 minutes.  A timer will appear on the bottom of the screen.  When you're ready to start, click the 'Begin' button below.</p>`;
+                       <p>You will be able to study this diagram for a total of 10 minutes.  A timer will appear on the bottom of the screen.  When you're ready to start, click the 'Begin' button below.</p>`;
       },
       choices: ["Begin"],
       on_finish(data) {
@@ -703,7 +731,7 @@
       type: jsPsychHtmlButtonResponse,
       stimulus: function () {
         //Get Cursor
-        const condCursor = getCursor();//Calls cursor function
+        const condCursor = getCursor(); //Calls cursor function
         console.log(`Cursor in stimulus is ${condCursor}`);
         var imageToStudy = "23062025Split.png";
         if (isRetinaDisplay()) {
@@ -740,9 +768,9 @@
 
         // Dynamically configure the extension parameters
         /*jsPsych.extensions["normalised-mouse-tracking"].on_start({
-          targets: ["#mouse-target"],
-          events: ["mousemove", "mousedown"], // Example events to track
-        });*/
+              targets: ["#mouse-target"],
+              events: ["mousemove", "mousedown"], // Example events to track
+            });*/
 
         // console.log(
         //   `Participant is ${participantHandedness} handed in imageDisplay on_load`
@@ -764,7 +792,7 @@
           document.getElementsByClassName("jspsych-content")[0];
         theContent.style.maxWidth = "80%";
         theContent.style.width = null;
-        theContent.style.cursor = `default`;//Reset the cursor
+        theContent.style.cursor = `default`; //Reset the cursor
       },
     };
     //////////////////////////////////////////////////////
@@ -1107,7 +1135,7 @@
       timeline.push(info_sheet);
       timeline.push(implied_consent_questionnaire);
 
-       //SET SCREEN SIZE-------------------
+      //SET SCREEN SIZE-------------------
       timeline.push(enlarge_screen);
       //timeline.push(enter_fullscreen);
 
@@ -1168,7 +1196,7 @@
       timeline.push(attentiveness_scale);
       timeline.push(distractions);
       timeline.push(tech_issues);
-      timeline.push(save_to_datapipe);
+      //timeline.push(save_to_datapipe);
       timeline.push(experiment_over); //Saves to Firebase and redirects after
     }
 
