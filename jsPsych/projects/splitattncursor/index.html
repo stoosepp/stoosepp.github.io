@@ -284,14 +284,11 @@
           (data.browser == "chrome" || data.browser == "firefox")
         ) {
           passedBrowserCheck = true;
-        }
-        else{
-          console.log('Browser not compliant');
+        } else {
+          console.log("Browser not compliant");
         }
       },
     };
-
-
 
     //////////////////////////////////////////////////////
     /* DEMO Condition Selection
@@ -745,7 +742,12 @@
           document.getElementsByClassName("jspsych-content")[0];
         theContent.style.width = "100%";
         theContent.style.maxWidth = "100%";
-        theContent.style.cursor = `${condCursor},none`;
+        if (condCursor === "none") {
+          theContent.style.cursor = "none";
+        } else {
+          theContent.style.cursor = `${condCursor},none`;
+        }
+        console.log("The cursor is ", theContent.style.cursor);
 
         return [
           `<div class="stimulus-image" id="mouse-target" style="height:${window.innerHeight}px;"><img src="img/${imageToStudy}" /></div><div id="clock">${imageDisplayDuration}:00</div>`,
