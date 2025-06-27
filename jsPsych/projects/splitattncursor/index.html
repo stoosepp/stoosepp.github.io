@@ -1134,7 +1134,7 @@
       timeline.push(experiment_details);
 
       //INTRO PHASE-------------------
-      timeline.push(info_sheet);
+     timeline.push(info_sheet);
       timeline.push(implied_consent_questionnaire);
 
       //SET SCREEN SIZE-------------------
@@ -1210,6 +1210,7 @@
     async function createExperiment() {
       if (source !== "manual") {
         const pipeCondition = await jsPsychPipe.getCondition("6XhA4WBsXQNS");
+        /*
         if (pipeCondition == 0) {
           //timeline = condition_1_timeline;
           condition = "Control";
@@ -1221,7 +1222,9 @@
         if (pipeCondition == 2) {
           //timeline = condition_2_timeline;
           condition = "Hand Cursor";
-        }
+        }*/
+       //SETTING CONDITION BECAUSE CONTROL WAS MESSED UP
+       condition = "Control";
         console.log(`Condition is ${condition} from ${source}.`);
         // thisCursorPath = "img/handicon32.png";
         // console.log(`Cursor Path is ${thisCursorPath} in handedness.`);
