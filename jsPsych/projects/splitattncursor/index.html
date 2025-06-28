@@ -1210,7 +1210,7 @@
     async function createExperiment() {
       if (source !== "manual") {
         const pipeCondition = await jsPsychPipe.getCondition("6XhA4WBsXQNS");
-        /*
+        
         if (pipeCondition == 0) {
           //timeline = condition_1_timeline;
           condition = "Control";
@@ -1222,9 +1222,9 @@
         if (pipeCondition == 2) {
           //timeline = condition_2_timeline;
           condition = "Hand Cursor";
-        }*/
+        }
        //SETTING CONDITION BECAUSE CONTROL WAS MESSED UP
-       condition = "Control";
+       //condition = "Control";
         console.log(`Condition is ${condition} from ${source}.`);
         // thisCursorPath = "img/handicon32.png";
         // console.log(`Cursor Path is ${thisCursorPath} in handedness.`);
