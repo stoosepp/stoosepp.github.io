@@ -16,7 +16,7 @@ class VideoURLs {
     "14qnVK60YXM", //Week 1 & 2
     "NAmeFmSnJqA", //Week 3 & 4
     "fml5R_r4DLo", //Week 5 & 6
-    "DGIXT7ce3vQ",
+    "DGIXT7ce3vQ", //Assessment & Intensive Period
     "kffeQ3_CLqQ", //Week 9 & 10
     "yNSs6PKChRI", //Week 11 & 12
     "3UEbA1D7Y-0", //Week 13
@@ -27,8 +27,9 @@ class VideoURLs {
     "r_fTa8QmIRQ", //Week 1 & 2
     "Mt8UdXTMLW0", //Week 3 & 4
     "HRbNPuBJ-F4", //Week 5 & 6
+    "kP9hgtJpW9w", //Week 7 & 8
     "DGIXT7ce3vQ", //Assessment & Intensive Period
-    "kP9hgtJpW9w", //Week 9 & 10
+    
     "S9jirJlhP0U", //Week 11 & 12
     "3UEbA1D7Y-0", //Week 13
   ];
@@ -60,8 +61,9 @@ class VideoURLs {
     "GmKJJ1VDoUE", //Week 1 & 2
     "4S-dsxI1EnY", //Week 3 & 4
     "WuFJokLqF1I", //Week 5 & 6
-    "DGIXT7ce3vQ", //Assessment & Intensive Period
     "A8X_UrMPu5Y", //Week 9 & 10
+    "DGIXT7ce3vQ", //Assessment & Intensive Period
+    
     "zBhnWRT8J7M", //Week 11 & 12
     "3UEbA1D7Y-0", //Week 13
   ];
@@ -71,8 +73,9 @@ class VideoURLs {
     "9wAcxp55Bco", //Week 1 & 2
     "Q5t1eaLhM18", //Week 3 & 4
     "o7xXdjoEjlk", //Week 5 & 6
-    "DGIXT7ce3vQ", //Assessment & Intensive Period
     "5H7CMePLyVg", //Week 9 & 10
+    "DGIXT7ce3vQ", //Assessment & Intensive Period
+    
     "SB08-lkRmHA", //Week 11 & 12
     "3UEbA1D7Y-0", //Week 13
   ];
