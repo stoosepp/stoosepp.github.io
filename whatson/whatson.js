@@ -95,7 +95,7 @@ export function displayWhatsOn({
   // } else if (thisWeek == 1) {
   //   //message = message + messages[3];
   //   message = "Check below for Live Session Dates and Times."
-   } else if (thisWeek == 8 || thisWeek == 9) {
+   } else if (thisWeek == 9 || thisWeek == 10) {
     heading = "Assessment & Intensive Period";
    message = messages[4];
   } else if (thisWeek == 13) {
