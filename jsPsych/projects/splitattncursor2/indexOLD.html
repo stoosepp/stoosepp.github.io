@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Split Attention Cursors</title>
+    <!-- Import  JSPsych Foundation from LOCAL -->
+    <script src="../../dist/jspsych.js"></script>
+    <link href="../../dist/jspsych.css" rel="stylesheet" type="text/css" />
+
+    <!-- Import  JSPsych Foundation from UNPKG -->
+    <!-- <script src="https://unpkg.com/jspsych@8.2.1"></script>
+    <link
+      href="https://unpkg.com/jspsych@8.2.1/css/jspsych.css"
+      rel="stylesheet"
+      type="text/css"
+    /> -->
+
+    <link href="style.css" rel="stylesheet" type="text/css" />
+    <!-- Import HELPER FUNCTIONS -->
+    <script src="helpers.js"></script>
+    <script src="constants.js"></script>
+
+    <!-- Import LOCAL PLUGINS -->
+
+    <script src="../../dist/plugin-browser-check.js"></script>
+    <script src="../../dist/plugin-preload.js"></script>
+    <script src="../../dist/plugin-call-function.js"></script>
+    <script src="../../dist/plugin-fullscreen.js"></script>
+    <script src="../../dist/plugin-html-button-response.js"></script>
+    <script src="../../dist/plugin-instructions.js"></script>
+    <script src="../../dist/plugin-survey-multi-choice.js"></script>
+    <script src="../../dist/plugin-survey-multi-select.js"></script>
+    <script src="../../dist/plugin-survey-text.js"></script>
+    <script src="../../dist/plugin-survey-likert.js"></script>
+    <script src="../../dist/plugin-pipe.js"></script>
+
+    <!-- Import CUSTOM PLUGINS Plugins-->
+    <script src="../plugin-vpt/plugin-vpt.js"></script>
+
+    <!-- Import CUSTOM EXTENSIONS -->
+    <script src="../extension-normalised-mouse-tracking/extension-normalised-mouse-tracking.js"></script>
+
+    <!-- Import PLUGINS from UNPKG 
+    <script src="https://unpkg.com/@jspsych/plugin-preload"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-browser-check"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-fullscreen"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-call-function"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-instructions"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-button-response"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-survey-multi-choice"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-survey-multi-select"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-survey-text"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-survey-likert"></script>
+    <script src="https://unpkg.com/@jspsych-contrib/plugin-pipe"></script>-->
+
+    <!-- Import REMOTE PLUGINS from GITHUB 
+    <script src="https://stoosepp.github.io/jspsych/plugin-vpt/plugin-vpt.js"></script>-->
+
+    <!-- Import REMOTE EXTENSIONS from GITHUB 
+    <script src="https://stoosepp.github.io/jspsych/extension-normalised-mouse-tracking/extension-normalised-mouse-tracking.js"></script>-->
+
+    <!-- Import TEST QUESTIONS -->
+    <script src="pretest.js"></script>
+    <script src="posttest.js"></script>
+    <!-- Import TEST QUESTIONS -->
+    <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore-compat.js"></script>
+  </head>
+  <body></body>
+  <script>
+    //////////////////////////////////////////////////////
+    //Prolific Info
+    var prolific_pid;
+    var study_id;
+    var session_id;
+    var colours = ["red", "blue", "green", "yellow", "orange"];
+    var currentColour = colours[randomIntFromInterval(0, colours.length - 1)];
+
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyBwpiJckjhzMweCnIgmSXLAAfIomuJmNNU",
+      authDomain: "cogsci-experiments.firebaseapp.com",
+      projectId: "cogsci-experiments",
+      storageBucket: "cogsci-experiments.firebasestorage.app",
+      messagingSenderId: "368496243117",
+      appId: "1:368496243117:web:adc9b7cfd88aee4e553124",
+      measurementId: "G-B9ZPP5ZZ37",
+    };
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    //Set up local variables
+    var condition = "";
+    var source = "";
+    var demo_condition = "";
+    var iconSize = "32";
+
+    //sets how often data is saved (e.g., 1000 would be saved every 1 second) - default is 0
+    var mouseTrackingSampleRate = 50;
+
+    var os = "";
+    var should_be_in_fullscreen = false;
+
+    var saveFileName = "";
+
+    var passedPracticeGrids = false;
+    var passedAttnCheck = false;
+    var lastScore;
+    var totalTrials;
+
+    //////////////////////////////////////////////////////
+    //Intitalise Experiment
+    const jsPsych = initJsPsych({
+      //experiment_width: 1000,
+      //show_progress_bar:true,
+      on_interaction_data_update: function (data) {
+        //MUST RESPOND TO EXITING FULL SCREEN. Taken from https://github.com/jspsych/jsPsych/discussions/1364
+        if (data.event == "fullscreenexit" && should_be_in_fullscreen) {
+          console.log("exited fullscreen");
+          // hide the contents of the current trial
+          jsPsych.getDisplayElement().style.display = "none";
+          // add a div that contains a message and button to re-enter fullscreen
+          jsPsych
+            .getDisplayElement()
+            .insertAdjacentHTML(
+              "beforebegin",
+              '<div id="message-div" style="margin: auto; width: 100%; text-align: center;">' +
+                "<p>Please remain in fullscreen mode during the task.</p>" +
+                "<p>When you click the button below, you will enter fullscreen mode and the task will resume.</p>" +
+                '<button id="jspsych-fullscreen-btn" class="jspsych-btn">Continue</button></div>'
+            );
+          // call the request fullscreen function when the button is clicked
+          document
+            .querySelector("#jspsych-fullscreen-btn")
+            .addEventListener("click", function () {
+              var element = document.documentElement;
+              if (element.requestFullscreen) {
+                element.requestFullscreen();
+              } else if (element.mozRequestFullScreen) {
+                element.mozRequestFullScreen();
+              } else if (element.webkitRequestFullscreen) {
+                element.webkitRequestFullscreen();
+              } else if (element.msRequestFullscreen) {
+                element.msRequestFullscreen();
+              }
+            });
+        }
+        if (data.event == "fullscreenenter") {
+          console.log("entered fullscreen");
+          // when entering fullscreen, check to see if the participant is re-entering fullscreen,
+          // i.e. the 'please enter fullscreen' message is on the page
+          var msg_div = document.querySelector("#message-div");
+          if (msg_div !== null) {
+            // remove the message
+            msg_div.remove();
+            // show the contents of the current trial again
+            jsPsych.getDisplayElement().style.display = "block";
+          }
+        }
+      },
+      extensions: [
+        {
+          type: jsPsychExtensionNormalisedMouseTracking,
+          params: { minimum_sample_time: mouseTrackingSampleRate },
+        },
+      ],
+      on_finish: function () {
+        console.log(`Experiment is DONE!`);
+
+        //----ONLY USE WHEN IN DEVELOPMENT---//
+
+        //----------------------------------//
+        saveToFirebase()
+          .then(() => {
+            console.log("Firebase save complete. Proceeding to next step...");
+            if (prolific_pid != null) {
+              window.location =
+                "https://app.prolific.co/submissions/complete?cc=136BDB5F";
+            } else {
+              window.location = "http://www.une.edu.au/";
+            }
+          })
+          .catch((error) => {
+            console.error("Failed to save data to Firebase:", error);
+            alert(
+              "An error occurred while saving your data. Please try again."
+            );
+          });
+      },
+    });
+
+    //////////////////////////////////////////////////////
+    //Set condition based on URL variables
+    //Setup conditions based on URL parameter
+
+    //Deal with URL variables
+    const urlVar = jsPsych.data.urlVariables();
+    console.log(urlVar);
+
+    if (urlVar.condNum != null) {
+      source = "manual";
+      condition = setCondition(urlVar.condNum);
+    } else if (urlVar.datapipe == "true") {
+      source = "datapipe";
+    } else {
+      const rndInt = randomIntFromInterval(0, 2);
+      condition = setCondition(`${rndInt}`);
+      source = "none";
+    }
+    if (urlVar.PROLIFIC_PID != null) {
+      prolific_pid = urlVar.PROLIFIC_PID;
+      study_id = urlVar.STUDY_ID;
+      session_id = urlVar.SESSION_ID;
+      console.log(
+        `Prolific is being used with PID:${prolific_pid}, Study ID: ${study_id}, and Session: ${session_id}`
+      );
+    }
+
+    //const condNum = jsPsych.data.getURLVariable("condNum");
+    //const datapipe = jsPsych.data.getURLVariable("true");
+
+    //////////////////////////////////////////////////////
+    //Make Participant ID and add to Experiment's dataset
+    subj_code = createParticipantID(12); // generate the actual code (12 strings)
+
+    //Set File Name for DataPipePlugin
+    saveFileName = `${subj_code}.json`;
+
+    //Create Timeline array to add pages (or 'trials') to
+    var timeline = [];
+
+    //////////////////////////////////////////////////////
+    //This loads all your assets
+    var preload_assets = {
+      type: jsPsychPreload,
+      images: [
+        `img/arrowiconblack${iconSize}.png`,
+        `img/handicon${iconSize}.png`,
+        `img/arrowicon${iconSize}.png`,
+        "img/stoosmall.jpg",
+        "img/unelogo.png",
+        "img/neurondiagram.png",
+        "img/13052025Split.png",
+        "img/13052025Split@2x.png",
+      ],
+    };
+
+    //////////////////////////////////////////////////////
+    //Get Browser Details
+    var browser_check = {
+      type: jsPsychBrowserCheck,
+      inclusion_function: (data) => {
+        return data.browser == "chrome" && data.mobile === false;
+      },
+      exclusion_message: (data) => {
+        if (data.mobile) {
+          return "<p>You must use a desktop/laptop computer to participate in this experiment.</p>";
+        } else if (data.browser !== "chrome" || data.browser !== "firefox") {
+          return "<p>You must use Chrome or Firefox as your browser to complete this experiment.</p>";
+        }
+      },
+    };
+
+    //////////////////////////////////////////////////////
+    /* DEMO Condition Selection
+        var conditionSelect = {
+          type: jsPsychSurveyMultiChoice,
+          questions: [
+            {
+              prompt: `<p><b>This study is in DEMO mode. <br> Select a condition from the choices below.</b></p>`,
+              name: "selectedCondition",
+              options: ["Control", "Arrow Cursor", "Hand Cursor"],
+              required: true,
+            },
+          ],
+          on_finish: function (data) {
+            (condition = data.response.selectedCondition), console.log(condition);
+          },
+        };
+
+        */
+
+    //////////////////////////////////////////////////////
+    //Deal with no URL variables
+    var no_urlVars = {
+      type: jsPsychHtmlButtonResponse,
+      stimulus: "This experiment is not open for you at this time.",
+      choices: [`Visit the author's Github page.`],
+      on_finish: function (data) {
+        //Send users to URL
+        window.location = "https://stoosepp.github.io";
+      },
+    };
+
+    //////////////////////////////////////////////////////
+    //Info Sheet
+    var info_sheet = {
+      type: jsPsychHtmlButtonResponse,
+      stimulus: TEMPLATE_CONTENT.info_sheet,
+      choices: [`No Thank you. This is not for me`, `I'd like to partipate`],
+      on_finish: function (data) {
+        data.stimulus = "InfoSheet";
+        if (data.response == 0) {
+          data.understand = "No";
+          console.log("No");
+          jsPsych.abortCurrentTimeline();
+        } else {
+          data.understand = "Yes";
+          console.log("Yes");
+        }
+      },
+    };
+
+    //////////////////////////////////////////////////////
+    //Implied Consent
+    var implied_consent_questionnaire = {
+      type: jsPsychHtmlButtonResponse,
+      stimulus: TEMPLATE_CONTENT.implied_consent_questionnaire,
+      choices: [`I don't agree`, `I agree. Take me to the experiment.`],
+      on_finish: function (data) {
+        data.stimulus = "ImpliedConsent";
+        if (data.response == 0) {
+          data.consent = "No";
+          console.log("No");
+          jsPsych.abortCurrentTimeline();
+        } else {
+          data.consent = "Yes";
+          console.log("Yes");
+        }
+      },
+    };
+    ////////////////
+    //Demographics
+    var gender = {
+      type: jsPsychSurveyMultiChoice,
+      questions: [
+        {
+          prompt: `<p>What is your gender? (select all that apply)</p>`,
+          name: "selectedGender",
+          options: ["Female", "Male", "Non-binary / gender diverse"],
+          required: true,
+        },
+      ],
+      on_finish: function (data) {
+        data.stimulus = "Gender";
+        data.gender = data.response.selectedGender;
+        data.response = null;
+        data.question_order = null;
+      },
+    };
+
+    var age = {
+      type: jsPsychSurveyMultiChoice,
+      questions: [
+        {
+          prompt: `<p>What is your age?</p>`,
+          name: "selectedAge",
+          options: ["16-24", "25-34", "35-49", "Over 50", "Prefer not to say"],
+          required: true,
+        },
+      ],
+      on_finish: function (data) {
+        data.stimulus = "Age";
+        data.gender = data.response.selectedAge;
+        data.response = null;
+        data.question_order = null;
+      },
+    };
+
+    var device = {
+      type: jsPsychSurveyMultiChoice,
+      questions: [
+        {
+          prompt: `<p>What type of pointing device are you using with your computer?</p>`,
+          name: "selectedDevice",
+          options: ["Mouse", "Trackpad"],
+          required: true,
+        },
+      ],
+      on_finish: function (data) {
+        data.stimulus = "Device";
+        data.device = data.response.selectedDevice;
+        data.response = null;
+        data.question_order = null;
+      },
+    };
+
+    //////////////////////////////////////////////////////
+    //Enter Full Screen Mode
+    var enter_fullscreen = {
+      type: jsPsychFullscreen,
+      message: `<p> To ensure the experiment is run correctly, it needs to run in full screen mode in your browser.</p> <p><strong>Please avoid pressing the 'esc' key while in full-screen mode as the experiment may be disrupted.</strong></p><p> Click the button below to continue. </p>`,
+      button_label: `Enter Full Screen`,
+      fullscreen_mode: true,
+      on_start: function () {
+        should_be_in_fullscreen = true; // once this trial starts, the participant should be in fullscreen
+      },
+      data: {},
+    };
+
+    //////////////////////////////////////////////////////
+    //This loads instructions page 1
+    var practiceVPTInstructions = {
+      type: jsPsychHtmlButtonResponse,
+      stimulus: `<p>In this part of the experiment you'll play a matching game. You will be presented with a grid of white boxes with some black boxes filled in.</p><p> Each grid will be shown for 3 seconds, then will go blank. Using your mouse or trackpad, it's your job to click the squares in the grid to copy the grid pattern you just saw by clicking on the blank squares to change their colour.</p><p> Let's practice. The first grid will appear as soon as you click the 'Next' button. When you're ready to go, click Next.</p>`,
+      choices: [`Next.`],
+      on_finish: function (data) {
+        data.stimulus = "Practice VPT Instructions";
+      },
+      data: {},
+    };
+
+    //////////////////////////////////////////////////////
+    //This loads practice Trial
+    var practiceVPT = {
+      type: jsPsychVPT,
+      version: "chupouw",
+      practice: true,
+      on_finish: function (data) {
+        if (data.vpt_chupouw_score == 1) {
+          passedPracticeGrids = true;
+          console.log("Participant Passed Practice");
+        }
+        lastScore = Number(data.vpt_total_score);
+        totalTrials = Number(data.vpt_total_trials);
+        //console.log(`Chupouw score was ${data.vpt_chupouw_score}`);
+        //console.log(`Della Sala score was ${data.vpt_dellasala_score}`);
+        console.log(`Total ${data.vpt_total_score} ${lastScore}`);
+      },
+      data: {},
+    };
+
+    //This loads instructions page 1
+    var tryAgain = {
+      type: jsPsychInstructions,
+      allow_backward: false,
+      pages: [
+        "Unfortunately you didn't pass both practice grids. Click Next to try again.",
+      ],
+      show_clickable_nav: true,
+      data: {},
+    };
+
+    var loop = {
+      timeline: [tryAgain, practiceVPTInstructions, practiceVPT],
+      loop_function: function () {
+        currentColour = colours[randomIntFromInterval(0, colours.length - 1)];
+        if ((passedPracticeGrids = false)) {
+          return true;
+        } else {
+          return false;
+        }
+      },
+    };
+
+    var if_node = {
+      timeline: [loop],
+      conditional_function: function () {
+        if (passedPracticeGrids == false) {
+          return true;
+        } else {
+          return false;
+        }
+      },
+    };
+
+    //////////////////////////////////////////////////////
+    //This loads the congratulations page
+    /*
+      var fullVPTInstructions = {
+        type: jsPsychInstructions,
+        allow_backward: false,
+        pages: function () {
+          return [
+            `Well done. You Scored ${lastScore}/${totalTrials}. Now it's time to play the real game, which should take about 5-10 minutes. When you're ready, click the 'Begin >' button.`,
+          ];
+        },
+        show_clickable_nav: true,
+        button_label_next: "Begin",
+        on_finish: function (data) {
+          data.stimulus = "Full VPT Instructions";
+        },
+      };*/
+
+    var fullVPTInstructions = {
+      type: jsPsychHtmlButtonResponse,
+      stimulus: function () {
+        return [
+          `Well done. You Scored ${lastScore}/${totalTrials}. Now it's time to take the real game, which should take about 5-10 minutes. When you're ready, click the 'Begin' button.`,
+        ];
+      },
+      choices: ["Begin."],
+      data: {},
+    };
+
+    //////////////////////////////////////////////////////
+    //This loads the full task
+    var fullVPTTask = {
+      type: jsPsychVPT,
+      version: "chupouw",
+      practice: false,
+      on_finish: function (data) {
+        lastScore = Number(data.vpt_total_score);
+        totalTrials = Number(data.vpt_total_trials);
+        console.log(`Chupouw score was ${data.chupouw_score}`);
+        console.log(`Della Sala score was ${data.dellasala_score}`);
+      },
+    };
+
+    //////////////////////////////////////////////////////
+    //This loads instructions page 1
+    /*
+        var postVPTInstructions = {
+          type: jsPsychInstructions,
+          allow_backward: false,
+          pages: function () {
+            return [
+              `Thanks for trying this memory game. Your final score was ${lastScore}/${totalTrials}. `,
+            ];
+          },
+          show_clickable_nav: true,
+          button_label_next: "Finish",
+        };*/
+
+    var postVPTInstructions = {
+      type: jsPsychHtmlButtonResponse,
+      stimulus: `<p>Thanks for trying this memory game. Your final score was ${lastScore}/${totalTrials}.</p>`,
+      choices: [`Next`],
+      on_finish: function (data) {
+        data.stimulus = "Post-VPT Instructions";
+      },
+      data: {},
+    };
+    /////////////////////////////////////////////////////
+    //Attention check for prolific users
+
+    var attention_check = {
+      type: jsPsychSurveyMultiChoice,
+      questions: [
+        {
+          prompt: `<p>This is an attention check.</p> <p>The colour is ${currentColour}`,
+          name: "selectedColor",
+          options: colours,
+          randomize_question_order: true,
+          required: true,
+        },
+      ],
+      on_finish: function (data) {
+        console.log(`${data.response.selectedColor} was selected.`);
+        if (data.response.selectedColor == currentColour) {
+          passedAttnCheck = true;
+        }
+      },
+      data: {},
+    };
+
+    //This loads instructions page 1
+    var attnTryAgain = {
+      type: jsPsychHtmlButtonResponse,
+      stimulus:
+        "Unfortunately you didn't pass the attention check. Click Next to try again.",
+      choices: ["Try Again."],
+    };
+
+    var attn_loop = {
+      timeline: [attnTryAgain, attention_check],
+      loop_function: function () {
+        if ((passedAttnCheck = false)) {
+          return true;
+        } else {
+          return false;
+        }
+      },
+    };
+
+    var attn_check_if_node = {
+      timeline: [attn_loop],
+      conditional_function: function () {
+        if (passedAttnCheck == false) {
+          return true;
+        } else {
+          return false;
+        }
+      },
+    };
+
+    /////////////////////////////////////////////////////
+    //Pre-Test Instructions
+    var preTestInstructions = {
+      type: jsPsychHtmlButtonResponse,
+      stimulus: TEMPLATE_CONTENT.pretest_instructions,
+      choices: [`Begin`],
+      on_finish: function (data) {
+        data.stimulus = "Pretest Instructions";
+      },
+      data: {},
+    };
+
+    //////////////////////////////////////////////////////
+    //Pre-Test
+    var build_pretest = {
+      type: jsPsychCallFunction,
+      func: function () {
+        console.log("Building Pretest");
+        buildTest("pretest", timeline);
+      },
+      on_load: function () {},
+      on_finish(data) {},
+    };
+
+    //////////////////////////////////////////////////////
+    // Background information
+    var background_information = {
+      type: jsPsychInstructions,
+      pages: [TEMPLATE_CONTENT.instructionsp1, TEMPLATE_CONTENT.instructionsp2],
+      show_clickable_nav: true,
+      on_load: function () {
+        console.log("Background Info Finished Loading.");
+      },
+    };
+    //////////////////////////////////////////////////////
+    // Show instructions (based on condition what the participant needs to do
+    var study_instructions = {
+      type: jsPsychHtmlButtonResponse,
+      stimulus: function () {
+        var conditionInstructions = "";
+        switch (condition) {
+          case "Control":
+            conditionInstructions = `<p>strong>While you study, please rest your hands on your desk or on your lap and DO NOT use your hands or fingers to point at elements on the screen to help you. Please use only your eyes to make a link between the text and associated parts of the diagram. </strong></p>`;
+            break;
+          case "Arrow Cursor":
+            conditionInstructions = `<p><strong>Your cursor will take the form of an arrow. While you study, please use your cursor to make a link between the text and associated parts of the diagram. Please DO NOT use your hands and fingers to point at elements on the screen. </strong></p>`;
+            break;
+          case "Hand Cursor":
+            conditionInstructions = `<p><strong>Your cursor will take the form of a hand icon. While you study, please use your cursor to make a link between the text and associated parts of the diagram. Please DO NOT use your hands and fingers to point at elements on the screen. </strong></p>`;
+            break;
+          default:
+          // code block
+        }
+
+        return `<p>Now it's time to start studying.</p><p>On the next screen you'll be presented with a diagram that explains how the biochemistry of a synapse works, which was purposefully designed to be challenging to learn from. It will show how an electrical signal (nerve impulse) is converted into a chemical signal and back again. Try your best to learn all that you can about changes in ion flow and electrical processes.</p> ${conditionInstructions}
+            <p>You will be able to study this diagram for a total of 12 minutes.  A timer will appear on the bottom of the screen.  When you're ready to start, click the 'Begin' button below.</p>`;
+      },
+      choices: ["Begin"],
+      on_finish(data) {
+        stimulus = "Study Instructions";
+      },
+    };
+    //////////////////////////////////////////////////////
+    /* Change the cursor based on condition DO THIS DIRECTLY BEFORE STIMULUS IS SHOWN */
+    var set_cursor = {
+      type: jsPsychCallFunction,
+      func: function () {
+        var href = window.location.href;
+        var dir = href.substring(0, href.lastIndexOf("/")) + "/";
+        console.log("Condition is " + condition);
+
+        switch (condition) {
+          case "Control":
+            //document.body.style.cursor = "none";
+            document.body.style.setProperty(
+              "cursor",
+              `none, pointer`,
+              "important"
+            );
+            break;
+          case "Arrow Cursor":
+            if (os == "Windows") {
+              //document.body.style.cursor = `url('${dir}/img/arrowicon${iconSize}.png'), pointer`;
+              document.body.style.setProperty(
+                "cursor",
+                `url('${dir}/img/arrowicon${iconSize}.png'), pointer`,
+                "important"
+              );
+            } else {
+              //document.body.style.cursor = `url('${dir}/img/arrowiconblack${iconSize}.png'), pointer`;
+              document.body.style.setProperty(
+                "cursor",
+                `url('${dir}/img/arrowiconblack${iconSize}.png'), pointer`,
+                "important"
+              );
+            }
+            break;
+          case "Hand Cursor":
+            //document.body.style.cursor = `url('${dir}/img/handicon${iconSize}.png'), pointer`;
+            document.body.style.setProperty(
+              "cursor",
+              `url('${dir}/img/handicon${iconSize}.png'), pointer`,
+              "important"
+            );
+            document.documentElement.style.setProperty(
+              "cursor",
+              `url('${dir}/img/handicon${iconSize}.png'), pointer`,
+              "important"
+            );
+            break;
+          default:
+          // code block
+        }
+
+        //Observer
+        const observer = new MutationObserver(() => {
+          if (document.body.style.cursor !== cursorURL) {
+            console.log(`Cursor changed to ${document.body.style.cursor}`);
+            document.body.style.cursor = cursorURL;
+          }
+        });
+        observer.observe(document.body, {
+          attributes: true,
+          attributeFilter: ["style"],
+        });
+      },
+      data: {},
+    };
+
+    //////////////////////////////////////////////////////
+    //Image Study 1
+    const imageDisplayDuration = 12; //Duration to show image in minutes
+    var stimulus_with_countown = {
+      type: jsPsychHtmlButtonResponse,
+      stimulus: function () {
+        return `<div class="stimulus-image" id="mouse-target" style="height:${window.innerHeight}px;"></div><div id="clock">${imageDisplayDuration}:00</div>`;
+      },
+      choices: ["Continue"],
+      trial_duration: imageDisplayDuration * 60 * 1000 + 1,
+      on_load: function () {
+        var imageToStudy = "13052025Split.png";
+        if (isRetinaDisplay()) {
+          imageToStudy = "13052025Split@2x.png";
+        }
+        //Set image container for size of screen
+        document.getElementsByClassName(
+          "stimulus-image"
+        )[0].style.backgroundImage = `url('img/${imageToStudy}')`;
+       //console.log(`Browser height is ${window.innerHeight}`);
+        document.getElementsByClassName("stimulus-image")[0].style.height =
+          window.innerHeight;
+        document.getElementsByClassName("jspsych-content")[0].style.width =
+          "100%";
+        document.getElementsByClassName("jspsych-content")[0].style.maxWidth =
+          "100%";
+        document.getElementsByClassName(
+          "jspsych-content-wrapper"
+        )[0].style.overflow = "hidden";
+
+        //Start timer
+        countdown(imageDisplayDuration, 1000);
+      },
+      extensions: [
+        {
+          type: jsPsychExtensionNormalisedMouseTracking,
+          params: {
+            targets: ["#mouse-target"],
+          },
+        },
+      ],
+      data: {
+        task: "draw",
+      },
+      on_finish: function (data) {
+        document.getElementsByClassName("jspsych-content")[0].style.maxWidth =
+          "80%";
+        document.getElementsByClassName("jspsych-content")[0].style.width =
+          null;
+        document.getElementsByClassName(
+          "jspsych-content-wrapper"
+        )[0].style.overflow = "scroll";
+        document.body.style.cursor = "default";
+      },
+    };
+
+    //////////////////////////////////////////////////////
+    var paas_scale = {
+      type: jsPsychSurveyLikert,
+      questions: [
+        {
+          required: true,
+          horizontal: true,
+          prompt:
+            "How much mental effort did you invest in studying these materials?",
+          labels: [
+            "Very Very Low Mental Effort",
+            "",
+            "Low Mental Effort",
+            "",
+            "Neither Low nor High Mental Effort",
+            "",
+            "High Mental Effort",
+            "",
+            "Very Very High Mental Effort",
+          ],
+        },
+      ],
+      on_finish(data) {
+        data.question_order = null;
+        data.stimulus = "Paas Scale";
+        data.rating = data.response.Q0 + 1;
+      },
+    };
+    //////////////////////////////////////////////////////
+    //This loads instructions regarding mental effort and CL measures
+    var me_instructions = {
+      type: jsPsychHtmlButtonResponse,
+      stimulus: `<p>Thank you for studying those materials.</p><p>Now you will answer a few questions about how you felt about studying them. Click 'Next' to begin.</p>`,
+      choices: ["Next"],
+      data: {},
+    };
+
+    //////////////////////////////////////////////////////
+    const likert_labels = [
+      "Strongly Disagree",
+      "",
+      "Disagree",
+      "",
+      "Neither Agree nor Disagree",
+      "",
+      "Agree",
+      "",
+      "Strongly Agree",
+    ];
+    var klepsch_ICL_scale = {
+      type: jsPsychSurveyLikert,
+      questions: [
+        {
+          required: true,
+          horizontal: true,
+          prompt:
+            "For this task, many things needed to be kept in mind simultaneously.",
+          labels: likert_labels,
+        },
+        {
+          required: true,
+          horizontal: true,
+          prompt: "This task was very complex.",
+          labels: likert_labels,
+        },
+      ],
+      on_finish(data) {
+        data.question_order = null;
+        data.stimulus = "Klepsch ICL Scale";
+        data.rating = Number((data.response.Q0 + 1 + data.response.Q1 + 1) / 2);
+      },
+    };
+    var klepsch_GCL_scale = {
+      type: jsPsychSurveyLikert,
+      questions: [
+        {
+          required: true,
+          horizontal: true,
+          prompt: "For this task, I had to highly engage myself.",
+          labels: likert_labels,
+        },
+        {
+          required: true,
+          horizontal: true,
+          prompt:
+            "For this task, I had to think intensively what things meant.",
+          labels: likert_labels,
+        },
+      ],
+      on_finish(data) {
+        data.question_order = null;
+        data.stimulus = "Klepsch GCL Scale";
+        data.rating = Number((data.response.Q0 + 1 + data.response.Q1 + 1) / 2);
+      },
+    };
+    var klepsch_ECL_scale = {
+      type: jsPsychSurveyLikert,
+      questions: [
+        {
+          required: true,
+          horizontal: true,
+          prompt:
+            "During this task, it was exhausting to find the important information.",
+          labels: likert_labels,
+        },
+        {
+          required: true,
+          horizontal: true,
+          prompt: "The design of this task was very inconvenient for learning.",
+          labels: likert_labels,
+        },
+        {
+          required: true,
+          horizontal: true,
+          prompt:
+            "During this task, it was difficult to recognize and link the crucial information.",
+          labels: likert_labels,
+        },
+      ],
+      on_finish(data) {
+        data.question_order = null;
+        data.stimulus = "Klepsch ECL Scale";
+        data.rating = Number(
+          (data.response.Q0 + 1 + data.response.Q1 + 1 + data.response.Q2 + 1) /
+            3
+        );
+      },
+    };
+
+    //////////////////////////////////////////////////////
+    //This loads instructions page 1
+    var posttest_instructions = {
+      type: jsPsychHtmlButtonResponse,
+      stimulus: `<p>Thank you.</p><p>Now you will take a test comprised of 30 questions to determine how much you learned. Take the time to do your best to answer the questions based on what you learned as this is a key aspect of the study. Click 'Begin' when you are ready.</p>`,
+      choices: [`Next.`],
+      data: {},
+    };
+
+    //////////////////////////////////////////////////////
+    //POSTTESTS HERE
+    //Just kidding they are added to the timeline at the end using the BuildTest function
+
+    /////////////////////////////////////// giving subjects the chance to report any technical issues
+    var tech_issues = {
+      type: jsPsychSurveyText,
+      name: "Tech_issue_query",
+      questions: [
+        {
+          prompt:
+            "In the text field below you can report any errors that you came across during the study (e.g., technical issues, layout problems, spelling errors, errors in program logic and flow, etc.).",
+          rows: 10,
+          columns: 100,
+          required: false,
+          name: "Tech_issue_report",
+        },
+      ],
+      on_finish: function (data) {
+        data.stimulus = "Tech Issues";
+        data.questions = null;
+        data.tech_issues = data.response.Tech_issue_report;
+      },
+    };
+
+    //Save Data with DATAPIPE=======================================================================================
+    const save_to_datapipe = {
+      type: jsPsychPipe,
+      action: "save",
+      experiment_id: "6XhA4WBsXQNS",
+      filename: saveFileName,
+      data_string: () => jsPsych.data.get().json(),
+    };
+
+    //Save Data with FIREBASE =======================================================================================
+    function saveToFirebase() {
+      const now = new Date();
+      const timestamp = now.toISOString(); // Use ISO format for a unique timestamp
+      const experimentData = JSON.parse(jsPsych.data.get().json()); // Get experiment data
+
+      console.log("Saving to Firebase...");
+
+      // Save data to Firestore
+      return db
+        .collection("experiment_data") // Replace "experiment_data" with your desired collection name
+        .doc(subj_code) // Use the participant's subject code as the document ID
+        .set({
+          timestamp: timestamp, // Add a timestamp for reference
+          subject: subj_code, // Add the subject code
+          condition: condition, // Add the experimental condition
+          data: experimentData, // Add the experiment data
+        })
+        .then(() => {
+          console.log("Data successfully saved to Firebase!");
+          return true;
+        })
+        .catch((error) => {
+          console.error("Error saving data to Firebase:", error);
+          return false;
+        });
+    }
+
+    //////////////////////////////////////////////////////
+    //This loads a confirmation that the experiment is over.
+    var experiment_over = {
+      type: jsPsychHtmlButtonResponse,
+      stimulus: `<p>Thank you for your efforts in completing this study. Your time is truly appreciated. Please click the complete button below.</p>`,
+      choices: ["Complete"],
+      data: {},
+    };
+
+    //Add Elements to Timeline ========================================================================================
+    //---DEMO ONLY---//
+    // timeline.push(conditionSelect);
+    //--------------//
+    console.log(`Condition is ${condition} from ${source}`);
+    if (source == "none") {
+      timeline.push(no_urlVars);
+    } else {
+      timeline.push(preload_assets);
+      timeline.push(browser_check);
+      timeline.push(info_sheet);
+      timeline.push(implied_consent_questionnaire);
+      timeline.push(gender);
+      timeline.push(age);
+      timeline.push(device);
+      timeline.push(enter_fullscreen);
+      timeline.push(practiceVPTInstructions);
+      timeline.push(practiceVPT);
+      timeline.push(if_node);
+      timeline.push(fullVPTInstructions);
+      timeline.push(fullVPTTask);
+      timeline.push(postVPTInstructions);
+      //ATTENTION CHECK FOR PROLIFIC USERS
+      if (prolific_pid != null) {
+        timeline.push(attention_check);
+        timeline.push(attn_check_if_node);
+      }
+      //---------------------------------
+      timeline.push(preTestInstructions);
+      buildTest("pretest", timeline); //this calls a few timeline pushes
+      //ATTENTION CHECK FOR PROLIFIC USERS
+      if (prolific_pid != null) {
+        timeline.push(attention_check);
+        timeline.push(attn_check_if_node);
+      }
+      //---------------------------------
+      timeline.push(background_information);
+      timeline.push(study_instructions);
+      timeline.push(set_cursor);
+      timeline.push(stimulus_with_countown);
+      timeline.push(me_instructions);
+      timeline.push(paas_scale);
+      timeline.push(klepsch_ICL_scale);
+      timeline.push(klepsch_GCL_scale);
+      timeline.push(klepsch_ECL_scale);
+      //ATTENTION CHECK FOR PROLIFIC USERS
+      if (prolific_pid != null) {
+        timeline.push(attention_check);
+        timeline.push(attn_check_if_node);
+      }
+      //---------------------------------
+      timeline.push(posttest_instructions);
+      buildTest("posttestRecall", timeline);
+      buildTest("posttestTransfer", timeline);
+      timeline.push(tech_issues);
+      timeline.push(save_to_datapipe);
+      timeline.push(experiment_over); //Saves to Firebase and redirects after
+    }
+
+    //Run the Experiment WITHOUT DATAPIPE============================================================================
+    //jsPsych.run(timeline);
+
+    //Run the Experiment through DataPipe ========================================================================
+
+    async function createExperiment() {
+      if (source == "datapipe") {
+        const pipeCondition = await jsPsychPipe.getCondition("6XhA4WBsXQNS");
+        if (pipeCondition == 0) {
+          //timeline = condition_1_timeline;
+          condition = "Control";
+        }
+        if (pipeCondition == 1) {
+          //timeline = condition_2_timeline;
+          condition = "Arrow Cursor";
+        }
+        if (pipeCondition == 2) {
+          //timeline = condition_2_timeline;
+          condition = "Hand Cursor";
+        }
+        console.log(`Condition is ${condition} from ${source}.`);
+      }
+      jsPsych.run(timeline);
+    }
+    createExperiment();
+  </script>
+</html>

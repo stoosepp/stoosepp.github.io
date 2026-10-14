@@ -54,12 +54,12 @@
       type: jsPsychVPT,
       practice: true,
       on_finish: function (data) {
-        if (data.vpt_chupouw_score == 1) {
+        if (data.chupouw_score == 1) {
           passedPracticeGrids = true;
           console.log("Participant Passed Practice");
         }
-        lastScore = Number(data.vpt_total_score);
-        totalTrials = Number(data.vpt_total_trials);
+        lastScore = Number(data.total_score);
+        totalTrials = Number(data.total_trials);
         //console.log(`Chupouw score was ${data.vpt_chupouw_score}`);
         //console.log(`Della Sala score was ${data.vpt_dellasala_score}`);
         //console.log(`Total ${data.vpt_total_score} ${lastScore}`);
@@ -121,8 +121,8 @@
       version: "demo",
       practice: false,
       on_finish: function (data) {
-        lastScore = Number(data.vpt_total_score);
-        totalTrials = Number(data.vpt_total_trials);
+        lastScore = Number(data.total_score);
+        totalTrials = Number(data.total_trials);
        // console.log(`Chupouw score was ${data.chupouw_score}`);
         //console.log(`Della Sala score was ${data.dellasala_score}`);
       },
