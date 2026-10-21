@@ -284,7 +284,7 @@
   var browser_check = {
     type: jsPsychBrowserCheck,
     inclusion_function: (data) => {
-      return data.browser == "chrome" && data.mobile === false;
+      return data.browser == "chrome" || data.browser == "firefox" && data.mobile === false;
     },
     exclusion_message: (data) => {
       if (data.mobile) {
@@ -389,26 +389,21 @@
   ////////////////
   //Demographics
   var gender = {
-    type: jsPsychSurveyMultiChoice,
-    questions: [
-      {
-        prompt: `What is your gender? (select all that apply)`,
-        name: "selectedGender",
-        options: ["Female", "Male", "Non-binary / gender diverse"],
-        required: true,
-      },
-    ],
-    on_load: function() {
-    const options = document.querySelectorAll('.jspsych-survey-multi-choice-option');
-    if (options.length > 0) {
-      const wrapper = document.createElement('div');
-      wrapper.className = 'custom-options-container';
-      
-      // Insert the wrapper right before the first option, then move options inside it
-      options[0].parentNode.insertBefore(wrapper, options[0]);
-      options.forEach(opt => wrapper.appendChild(opt));
-    }
-  },
+    type: jsPsychSurvey,
+    survey_json: {
+      showQuestionNumbers: false,
+      elements: [
+        {
+          type: 'radiogroup',
+          title: 'What is your gender?',
+          name: "selectedGender",
+          choices: ["Female", "Male", "Non-binary / gender diverse", "Prefer not to say"],
+          showOtherItem: true,
+          otherText: "Other (please specify)",
+          isRequired: true,
+        }
+      ]
+    },
     on_finish: function (data) {
       data.stimulus = "Gender";
       data.gender = data.response.selectedGender;
@@ -418,26 +413,16 @@
   };
 
   var age = {
-    type: jsPsychSurveyMultiChoice,
+    type: jsPsychSurveyText,
     questions: [
       {
-        prompt: `What is your age?`,
+        prompt: `<p>What is your age?</p>`,
         name: "selectedAge",
-        options: ["16-24", "25-34", "35-49", "Over 50", "Prefer not to say"],
+        rows: 1,
+        columns: 20,
         required: true,
       },
     ],
-    on_load: function() {
-    const options = document.querySelectorAll('.jspsych-survey-multi-choice-option');
-    if (options.length > 0) {
-      const wrapper = document.createElement('div');
-      wrapper.className = 'custom-options-container';
-      
-      // Insert the wrapper right before the first option, then move options inside it
-      options[0].parentNode.insertBefore(wrapper, options[0]);
-      options.forEach(opt => wrapper.appendChild(opt));
-    }
-  },
     on_finish: function (data) {
       data.stimulus = "Age";
       data.age = data.response.selectedAge;
@@ -452,23 +437,23 @@
     type: jsPsychSurveyMultiChoice,
     questions: [
       {
-        prompt: `What type of pointing device are you using with your computer?`,
+        prompt: `<p>What type of pointing device are you using with your computer?</p>`,
         name: "selectedDevice",
         options: ["Mouse", "Trackpad"],
         required: true,
       },
     ],
-    on_load: function() {
-    const options = document.querySelectorAll('.jspsych-survey-multi-choice-option');
-    if (options.length > 0) {
-      const wrapper = document.createElement('div');
-      wrapper.className = 'custom-options-container';
-      
-      // Insert the wrapper right before the first option, then move options inside it
-      options[0].parentNode.insertBefore(wrapper, options[0]);
-      options.forEach(opt => wrapper.appendChild(opt));
-    }
-  },
+    on_load: function () {
+      const options = document.querySelectorAll('.jspsych-survey-multi-choice-option');
+      if (options.length > 0) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'custom-options-container';
+
+        // Insert the wrapper right before the first option, then move options inside it
+        options[0].parentNode.insertBefore(wrapper, options[0]);
+        options.forEach(opt => wrapper.appendChild(opt));
+      }
+    },
     on_finish: function (data) {
       data.stimulus = "Device";
       data.device = data.response.selectedDevice;
@@ -481,23 +466,23 @@
     type: jsPsychSurveyMultiChoice,
     questions: [
       {
-        prompt: `What is your dominant hand?`,
+        prompt: `<p>What is your dominant hand?</p>`,
         name: "selectedHandedness",
         options: ["Right", "Left", "Ambidextrous"],
         required: true,
       },
     ],
-    on_load: function() {
-    const options = document.querySelectorAll('.jspsych-survey-multi-choice-option');
-    if (options.length > 0) {
-      const wrapper = document.createElement('div');
-      wrapper.className = 'custom-options-container';
-      
-      // Insert the wrapper right before the first option, then move options inside it
-      options[0].parentNode.insertBefore(wrapper, options[0]);
-      options.forEach(opt => wrapper.appendChild(opt));
-    }
-  },
+    on_load: function () {
+      const options = document.querySelectorAll('.jspsych-survey-multi-choice-option');
+      if (options.length > 0) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'custom-options-container';
+
+        // Insert the wrapper right before the first option, then move options inside it
+        options[0].parentNode.insertBefore(wrapper, options[0]);
+        options.forEach(opt => wrapper.appendChild(opt));
+      }
+    },
     on_finish: function (data) {
       data.stimulus = "Hand";
       data.handedness = data.response.selectedHandedness;
@@ -538,15 +523,15 @@
     version: "chupouw",
     practice: true,
     on_finish: function (data) {
-      if (data.chupouw_score == 1) {
+      if (data.vpt_chupouw_score == 1) {
         passedPracticeGrids = true;
         console.log("Participant Passed Practice");
       }
-      lastScore = Number(data.total_score);
-      totalTrials = Number(data.total_trials);
-      //console.log(`Chupouw score was ${data.chupouw_score}`);
-      //console.log(`Della Sala score was ${data.dellasala_score}`);
-      console.log(`Total ${data.total_score} ${lastScore}`);
+      lastScore = Number(data.vpt_total_score);
+      totalTrials = Number(data.vpt_total_trials);
+      //console.log(`Chupouw score was ${data.vpt_chupouw_score}`);
+      //console.log(`Della Sala score was ${data.vpt_dellasala_score}`);
+      console.log(`Total ${data.vpt_total_score} ${lastScore}`);
     },
     data: {},
   };
@@ -566,7 +551,7 @@
     timeline: [tryAgain, practiceVPTInstructions, practiceVPT],
     loop_function: function () {
       currentColour = colours[randomIntFromInterval(0, colours.length - 1)];
-      if (!passedPracticeGrids) {
+      if ((passedPracticeGrids = false)) {
         return true;
       } else {
         return false;
@@ -606,16 +591,27 @@
     version: "chupouw",
     practice: false,
     on_finish: function (data) {
-      lastScore = Number(data.total_score);
-      totalTrials = Number(data.total_trials);
-      console.log(`Chupouw score was ${data.chupouw_score}`);
-      console.log(`Della Sala score was ${data.dellasala_score}`);
+      lastScore = Number(data.vpt_total_score);
+      totalTrials = Number(data.vpt_total_trials);
+      console.log(`Chupouw score was ${data.vpt_chupouw_score}`);
+      console.log(`Della Sala score was ${data.vpt_dellasala_score}`);
     },
   };
 
   //////////////////////////////////////////////////////
   //This loads instructions page 1
-
+  /*
+      var postVPTInstructions = {
+        type: jsPsychInstructions,
+        allow_backward: false,
+        pages: function () {
+          return [
+            `Thanks for trying this memory game. Your final score was ${lastScore}/${totalTrials}. `,
+          ];
+        },
+        show_clickable_nav: true,
+        button_label_next: "Finish",
+      };*/
 
   var postVPTInstructions = {
     type: jsPsychHtmlButtonResponse,
@@ -797,15 +793,6 @@
         // code block
       }
 
-    },
-    data: {},
-  };
-
-  var reset_cursor = {
-    type: jsPsychCallFunction,
-    func: function () {
-      document.body.style.removeProperty("cursor");
-      document.documentElement.style.removeProperty("cursor");
     },
     data: {},
   };
@@ -1047,7 +1034,6 @@
 
     //DEMOGRAPHICS
     timeline.push(gender);
-   
     timeline.push(age);
     timeline.push(device);
     timeline.push(handedness);
@@ -1066,10 +1052,10 @@
       timeline.push(attention_check);
       timeline.push(attn_check_if_node);
     }
-    //PRIOR KNOWLEDGE TEST
+    //PRIOR KNOLWEDGE TEST
     timeline.push(preTestInstructions);
-    buildTest("pretest", timeline); //this calls a few timeline pushes
 
+    buildTest("pretest", timeline); //this calls a few timeline pushes
     //ATTENTION CHECK FOR PROLIFIC USERS
     if (prolific_pid != null) {
       timeline.push(attention_check);
@@ -1104,9 +1090,6 @@
         },
       });
 
-      //Restore the normal cursor for the PAAS scale
-      timeline.push(reset_cursor);
-
       timeline.push({
         ...paas_scale,
         questions: paas_scale.questions.map((question) => ({
@@ -1119,12 +1102,14 @@
           page: pageNumber,
         },
       });
-
-      //Re-apply the condition cursor before the next study page
-      if (i < studyPages.length - 1) {
-        timeline.push(set_cursor);
-      }
     }
+    timeline.push({
+      type: jsPsychCallFunction,
+      func: function () {
+        document.body.style.removeProperty("cursor");
+        document.documentElement.style.removeProperty("cursor");
+      },
+    });
     timeline.push(me_instructions);
     //timeline.push(paas_scale);
     timeline.push(klepsch_ICL_scale);
