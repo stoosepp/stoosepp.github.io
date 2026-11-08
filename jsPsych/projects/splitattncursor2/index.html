@@ -7,14 +7,6 @@
   <script src="../../dist/jspsych.js"></script>
   <link href="../../dist/jspsych.css" rel="stylesheet" type="text/css" />
 
-  <!-- Import  JSPsych Foundation from UNPKG -->
-  <!-- <script src="https://unpkg.com/jspsych@8.2.1"></script>
-    <link
-      href="https://unpkg.com/jspsych@8.2.1/css/jspsych.css"
-      rel="stylesheet"
-      type="text/css"
-    /> -->
-
   <link href="style.css" rel="stylesheet" type="text/css" />
 
   <!-- Import HELPER FUNCTIONS -->
@@ -37,10 +29,14 @@
   <script src="../../dist/plugin-pipe.js"></script>
 
   <!-- Import CUSTOM PLUGINS Plugins-->
-  <script src="../plugin-vpt/plugin-vpt.js"></script>
+  <script src="../plugin-vpt/plugin-vpt.js?v=1.0.1"></script>
 
-  <!-- Import CUSTOM EXTENSIONS -->
-  <script src="../extension-normalised-mouse-tracking/extension-normalised-mouse-tracking.js"></script>
+    <!-- Import  Data Pipe -->
+  <script src="../../dist/extension-pipe.js"></script>
+
+  <!-- Import MOUSE TRACKING EXTENSION -->
+  <script src="../../dist/extension-mouse-tracking.js"></script>
+  <script src="compact-mouse-tracking.js"></script>
 
 
   <!-- Import REMOTE PLUGINS from GITHUB 
@@ -52,9 +48,10 @@
   <!-- Import TEST QUESTIONS -->
   <script src="pretest.js"></script>
   <script src="posttest.js"></script>
-  <!-- Import TEST QUESTIONS -->
+  <!-- Firebase backup (disabled)
   <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore-compat.js"></script>
+  -->
 </head>
 
 <body></body>
@@ -67,6 +64,7 @@
   var colours = ["red", "blue", "green", "yellow", "orange"];
   var currentColour = colours[randomIntFromInterval(0, colours.length - 1)];
 
+  /* Firebase backup configuration (disabled)
   // Your web app's Firebase configuration
   // For Firebase JS SDK v7.20.0 and later, measurementId is optional
   const firebaseConfig = {
@@ -81,6 +79,7 @@
   // Initialize Firebase
   const app = firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
+  */
 
   //Set up local variables
   var condition = "";
@@ -89,7 +88,7 @@
   var iconSize = "32";
 
   //sets how often data is saved (e.g., 1000 would be saved every 1 second) - default is 0
-  var mouseTrackingSampleRate = 50;
+  var mouseTrackingSampleRate = 25;
 
   var os = "";
   var should_be_in_fullscreen = false;
@@ -98,6 +97,7 @@
   var passedAttnCheck = false;
   var lastScore;
   var totalTrials;
+  //var dataPipeSaveSucceeded = false;
 
   //////////////////////////////////////////////////////
   //Intitalise Experiment
@@ -151,62 +151,48 @@
     },
     extensions: [
       {
-        type: jsPsychExtensionNormalisedMouseTracking,
+        type: CompactMouseTracking,
         params: { minimum_sample_time: mouseTrackingSampleRate },
+      },
+      {
+        type: jsPsychExtensionPipe,
+        params: {
+          experiment_id: "l4y7c2KXjvM6",
+          format: "json",
+          filename: () => `${subj_code}.json`,
+          wait_message: `
+  <style>
+    @keyframes save-spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .save-spinner {
+      width: 40px;
+      height: 40px;
+      margin: 20px auto;
+      border: 5px solid #ddd;
+      border-top-color: #333;
+      border-radius: 50%;
+      animation: save-spin 1s linear infinite;
+    }
+  </style>
+  <div role="status" aria-live="polite">
+    <div class="save-spinner" aria-hidden="true"></div>
+    <p>Saving your data. Please do not close this window.</p>
+  </div>
+`,
+          done_message: "<p>Thank you. Your data has been saved.</p>",
+          on_save: function (result) {
+            if (!result.ok) {
+              jsPsych.getDisplayElement().innerHTML =
+                "<p>Your data could not be saved. Please contact the researcher before closing this window.</p>";
+            }
+          },
+        },
       },
     ],
     on_finish: function () {
       console.log(`Experiment is DONE!`);
-
-      const displayElement = jsPsych.getDisplayElement();
-      displayElement.innerHTML = `
-          <style>
-            .spinner {
-              animation: rotate 2s linear infinite;
-              width: 50px;
-              height: 50px;
-            }
-            .spinner .path {
-              stroke: rgb(25, 25, 25);
-              stroke-linecap: round;
-              animation: dash 1.5s ease-in-out infinite;
-            }
-            @keyframes rotate {
-              100% { transform: rotate(360deg); }
-            }
-            @keyframes dash {
-              0% { stroke-dasharray: 1, 150; stroke-dashoffset: 0; }
-              50% { stroke-dasharray: 90, 150; stroke-dashoffset: -35; }
-              100% { stroke-dasharray: 90, 150; stroke-dashoffset: -124; }
-            }
-          </style>
-          <div role="status" aria-live="polite">
-            <p>Saving data. Please do not close this page.</p>
-            <svg class="spinner" viewBox="0 0 50 50" aria-hidden="true">
-              <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
-            </svg>
-          </div>
-        `;
-
-      saveToFirebase()
-        .then((saved) => {
-          if (!saved) {
-            throw new Error("Firebase save failed");
-          }
-          console.log("Firebase save complete. Proceeding to next step...");
-          if (prolific_pid != null) {
-            window.location =
-              "https://app.prolific.co/submissions/complete?cc=136BDB5F";
-          } else {
-            window.location = "https://www.bcu.ac.uk/";
-          }
-        })
-        .catch((error) => {
-          console.error("Failed to save data to Firebase:", error);
-          alert(
-            "An error occurred while saving your data. Please try again."
-          );
-        });
     },
   });
 
@@ -244,8 +230,7 @@
   //Make Participant ID and add to Experiment's dataset
   subj_code = createParticipantID(12); // generate the actual code (12 strings)
 
-  //Set File Name for DataPipePlugin
-  saveFileName = `${subj_code}.json`;
+
 
   //Create Timeline array to add pages (or 'trials') to
   var timeline = [];
@@ -501,7 +486,7 @@
     on_start: function () {
       should_be_in_fullscreen = true; // once this trial starts, the participant should be in fullscreen
     },
-    data: {},
+    record_data: false,
   };
 
   //////////////////////////////////////////////////////
@@ -510,10 +495,7 @@
     type: jsPsychHtmlButtonResponse,
     stimulus: `<p>In this part of the experiment you'll play a matching game. You will be presented with a grid of white boxes with some black boxes filled in.</p><p> Each grid will be shown for 3 seconds, then will go blank. Using your mouse or trackpad, it's your job to click the squares in the grid to copy the grid pattern you just saw by clicking on the blank squares to change their colour.</p><p> Let's practice. The first grid will appear as soon as you click the 'Next' button. When you're ready to go, click Next.</p>`,
     choices: [`Next.`],
-    on_finish: function (data) {
-      data.stimulus = "Practice VPT Instructions";
-    },
-    data: {},
+    record_data: false,
   };
 
   //////////////////////////////////////////////////////
@@ -522,18 +504,16 @@
     type: jsPsychVPT,
     version: "chupouw",
     practice: true,
-    on_finish: function (data) {
-      if (data.vpt_chupouw_score == 1) {
-        passedPracticeGrids = true;
+    on_result: function (data) {
+      passedPracticeGrids = data.chupouw_score === 1;
+      if (passedPracticeGrids) {
         console.log("Participant Passed Practice");
       }
-      lastScore = Number(data.vpt_total_score);
-      totalTrials = Number(data.vpt_total_trials);
-      //console.log(`Chupouw score was ${data.vpt_chupouw_score}`);
-      //console.log(`Della Sala score was ${data.vpt_dellasala_score}`);
-      console.log(`Total ${data.vpt_total_score} ${lastScore}`);
+      lastScore = data.total_score;
+      totalTrials = data.total_trials;
+      console.log(`Total ${lastScore}/${totalTrials}`);
     },
-    data: {},
+    record_data: false,
   };
 
   //This loads instructions page 1
@@ -544,29 +524,21 @@
       "Unfortunately you didn't pass both practice grids. Click Next to try again.",
     ],
     show_clickable_nav: true,
-    data: {},
+    record_data: false,
   };
 
   var loop = {
     timeline: [tryAgain, practiceVPTInstructions, practiceVPT],
     loop_function: function () {
       currentColour = colours[randomIntFromInterval(0, colours.length - 1)];
-      if ((passedPracticeGrids = false)) {
-        return true;
-      } else {
-        return false;
-      }
+      return !passedPracticeGrids;
     },
   };
 
   var if_node = {
     timeline: [loop],
     conditional_function: function () {
-      if (passedPracticeGrids == false) {
-        return true;
-      } else {
-        return false;
-      }
+      return !passedPracticeGrids;
     },
   };
 
@@ -576,12 +548,10 @@
   var fullVPTInstructions = {
     type: jsPsychHtmlButtonResponse,
     stimulus: function () {
-      return [
-        `Well done. You Scored ${lastScore}/${totalTrials}. Now it's time to take the real game, which should take about 5-10 minutes. When you're ready, click the 'Begin' button.`,
-      ];
+      return `Well done. You Scored ${lastScore}/${totalTrials}. Now it's time to take the real game, which should take about 5-10 minutes. When you're ready, click the 'Begin' button.`;
     },
     choices: ["Begin."],
-    data: {},
+    record_data: false,
   };
 
   //////////////////////////////////////////////////////
@@ -591,27 +561,15 @@
     version: "chupouw",
     practice: false,
     on_finish: function (data) {
-      lastScore = Number(data.vpt_total_score);
-      totalTrials = Number(data.vpt_total_trials);
-      console.log(`Chupouw score was ${data.vpt_chupouw_score}`);
-      console.log(`Della Sala score was ${data.vpt_dellasala_score}`);
+      lastScore = data.total_score;
+      totalTrials = data.total_trials;
+      console.log(`Chupouw score was ${data.chupouw_score}`);
+      console.log(`Della Sala score was ${data.dellasala_score}`);
     },
   };
 
   //////////////////////////////////////////////////////
   //This loads instructions page 1
-  /*
-      var postVPTInstructions = {
-        type: jsPsychInstructions,
-        allow_backward: false,
-        pages: function () {
-          return [
-            `Thanks for trying this memory game. Your final score was ${lastScore}/${totalTrials}. `,
-          ];
-        },
-        show_clickable_nav: true,
-        button_label_next: "Finish",
-      };*/
 
   var postVPTInstructions = {
     type: jsPsychHtmlButtonResponse,
@@ -619,10 +577,7 @@
       return `<p>Thanks for trying this memory game. Your final score was ${lastScore}/${totalTrials}.</p>`;
     },
     choices: [`Next`],
-    on_finish: function (data) {
-      data.stimulus = "Post-VPT Instructions";
-    },
-    data: {},
+    record_data: false,
   };
   /////////////////////////////////////////////////////
   //Attention check for prolific users
@@ -631,20 +586,23 @@
     type: jsPsychSurveyMultiChoice,
     questions: [
       {
-        prompt: `<p>This is an attention check.</p> <p>The colour is ${currentColour}`,
+        prompt: "",
         name: "selectedColor",
         options: colours,
         randomize_question_order: true,
         required: true,
       },
     ],
-    on_finish: function (data) {
-      console.log(`${data.response.selectedColor} was selected.`);
-      if (data.response.selectedColor == currentColour) {
-        passedAttnCheck = true;
-      }
+    data: { task: "attention_check" },
+    on_start: function (trial) {
+      trial.questions[0].prompt = `<p>This is an attention check.</p> <p>The colour is ${currentColour}</p>`;
     },
-    data: {},
+    on_finish: function (data) {
+      passedAttnCheck = data.response.selectedColor === currentColour;
+      data.expected_color = currentColour;
+      data.correct = passedAttnCheck;
+      console.log(`${data.response.selectedColor} was selected.`);
+    },
   };
 
   //This loads instructions page 1
@@ -658,11 +616,7 @@
   var attn_loop = {
     timeline: [attnTryAgain, attention_check],
     loop_function: function () {
-      if ((passedAttnCheck = false)) {
-        return true;
-      } else {
-        return false;
-      }
+      return !passedAttnCheck;
     },
   };
 
@@ -683,10 +637,7 @@
     type: jsPsychHtmlButtonResponse,
     stimulus: TEMPLATE_CONTENT.pretest_instructions,
     choices: [`Begin`],
-    on_finish: function (data) {
-      data.stimulus = "Pretest Instructions";
-    },
-    data: {},
+    record_data: false,
   };
 
   //////////////////////////////////////////////////////
@@ -737,9 +688,10 @@
             <p>When you're ready to start, click the 'Begin' button below.</p></div>`;
     },
     choices: ["Begin"],
-    on_finish(data) {
-      stimulus = "Study Instructions";
-    },
+    // on_finish(data) {
+    //   stimulus = "Study Instructions";
+    // },
+    record_data: false,
   };
   //////////////////////////////////////////////////////
   /* Change the cursor based on condition DO THIS DIRECTLY BEFORE STIMULUS IS SHOWN */
@@ -748,14 +700,14 @@
     func: function () {
       var href = window.location.href;
       var dir = href.substring(0, href.lastIndexOf("/")) + "/";
-      console.log("Condition is " + condition);
+      console.log("Setting Cursor for Condition: " + condition);
 
       switch (condition) {
         case "Control":
           //document.body.style.cursor = "none";
           document.body.style.setProperty(
             "cursor",
-            `none, pointer`,
+            "none",
             "important"
           );
           break;
@@ -794,7 +746,7 @@
       }
 
     },
-    data: {},
+    record_data: false,
   };
 
   //////////////////////////////////////////////////////
@@ -806,7 +758,7 @@
     //caption: `Study screen ${i + 1} of ${heartFiles.length}`,
   }));
   const perPageDurationsMinutes = [3, 2, 2, 2, 2, 1, 1, 2.5, 2, 2, 2, 2];
-  
+
   //////////////////////////////////////////////////////
   var paas_scale = {
     type: jsPsychSurveyLikert,
@@ -841,7 +793,7 @@
     type: jsPsychHtmlButtonResponse,
     stimulus: `<p>Thank you for studying those materials.</p><p>Now you will answer a few questions about how you felt about studying them. Click 'Next' to begin.</p>`,
     choices: ["Next"],
-    data: {},
+    record_data: false,
   };
 
   //////////////////////////////////////////////////////
@@ -942,12 +894,12 @@
     type: jsPsychHtmlButtonResponse,
     stimulus: `<p>Thank you.</p><p>Now you will take a test comprised of 40 questions to determine how much you learned. Take the time to do your best to answer the questions based on what you learned as this is a key aspect of the study. Click 'Begin' when you are ready.</p>`,
     choices: [`Next.`],
-    data: {},
+    record_data: false,
   };
 
   //////////////////////////////////////////////////////
-  //POSTTESTS HERE
-  //Just kidding they are added to the timeline at the end using the BuildTest function
+  //POSTTESTS ADDED IN TIMELINE
+
 
   /////////////////////////////////////// giving subjects the chance to report any technical issues
   var tech_issues = {
@@ -970,53 +922,28 @@
     },
   };
 
-  //Save Data with DATAPIPE=======================================================================================
-  const save_to_datapipe = {
-    type: jsPsychPipe,
-    action: "save",
-    experiment_id: "6XhA4WBsXQNS",
-    filename: saveFileName,
-    data_string: () => jsPsych.data.get().json(),
-  };
-
-  //Save Data with FIREBASE =======================================================================================
-  function saveToFirebase() {
-    const now = new Date();
-    const timestamp = now.toISOString(); // Use ISO format for a unique timestamp
-    const experimentData = JSON.parse(jsPsych.data.get().json()); // Get experiment data
-
-    console.log("Saving to Firebase...");
-
-    // Save data to Firestore
-    return db
-      .collection("splitattncursorsv2") // The Name of the experiment in Firebase
-      .doc(subj_code) // Use the participant's subject code as the document ID
-      .set({
-        timestamp: timestamp, // Add a timestamp for reference
-        subject: subj_code, // Add the subject code
-        condition: condition, // Add the experimental condition
-        data: experimentData, // Add the experiment data
-      })
-      .then(() => {
-        console.log("Data successfully saved to Firebase!");
-        return true;
-      })
-      .catch((error) => {
-        console.error("Error saving data to Firebase:", error);
-        return false;
-      });
-  }
-
   //////////////////////////////////////////////////////
   //This loads a confirmation that the experiment is over.
   var experiment_over = {
     type: jsPsychHtmlButtonResponse,
     stimulus: TEMPLATE_CONTENT.debriefing,
     choices: ["Complete"],
-    data: {},
+    save_trial_parameters: { stimulus: false },
+    record_data: false,
   };
 
   //Add Elements to Timeline ========================================================================================
+  timeline.push({
+    type: jsPsychCallFunction,
+    data: { task: "experiment_start_metadata" },
+    func: function () {
+      return {
+        exp_condition: condition,
+        experiment_start: jsPsych.getStartTime().toISOString(),
+      };
+    },
+  });
+
   //---DEMO ONLY---//
   // timeline.push(conditionSelect);
 
@@ -1027,47 +954,49 @@
   } else {
     timeline.push(preload_assets);
     timeline.push(browser_check);
-    
+
     //INFO SHEET AND CONSENT
+
     timeline.push(explanatory_statement);
     timeline.push(implied_consent_questionnaire);
-
-    //DEMOGRAPHICS
-    timeline.push(gender);
-    timeline.push(age);
-    timeline.push(device);
-    timeline.push(handedness);
+   
+       //DEMOGRAPHICS
+       timeline.push(gender);
+       timeline.push(age);
+       timeline.push(device);
+       timeline.push(handedness);
+      
     timeline.push(enter_fullscreen);
-
-    //VISUAL PATTERN TEST
-    timeline.push(practiceVPTInstructions);
-    timeline.push(practiceVPT);
-    timeline.push(if_node);
-    timeline.push(fullVPTInstructions);
-    timeline.push(fullVPTTask);
-    timeline.push(postVPTInstructions);
+   
+        //VISUAL PATTERN TEST
+        timeline.push(practiceVPTInstructions);
+        timeline.push(practiceVPT);
+        timeline.push(if_node);
+        timeline.push(fullVPTInstructions);
+        timeline.push(fullVPTTask);
+        timeline.push(postVPTInstructions);
+        
+        //ATTENTION CHECK FOR PROLIFIC USERS
+        if (prolific_pid != null) {
+          timeline.push(attention_check);
+          timeline.push(attn_check_if_node);
+        }
+        //PRIOR KNOLWEDGE TEST
+        timeline.push(preTestInstructions);
     
-    //ATTENTION CHECK FOR PROLIFIC USERS
-    if (prolific_pid != null) {
-      timeline.push(attention_check);
-      timeline.push(attn_check_if_node);
-    }
-    //PRIOR KNOLWEDGE TEST
-    timeline.push(preTestInstructions);
-
-    buildTest("pretest", timeline); //this calls a few timeline pushes
-    //ATTENTION CHECK FOR PROLIFIC USERS
-    if (prolific_pid != null) {
-      timeline.push(attention_check);
-      timeline.push(attn_check_if_node);
-    }
-    //---------------------------------
-    //ACQUISITION PHASE
+        buildTest("pretest", timeline); //this calls a few timeline pushes
+        //ATTENTION CHECK FOR PROLIFIC USERS
+        if (prolific_pid != null) {
+          timeline.push(attention_check);
+          timeline.push(attn_check_if_node);
+        }
+        //---------------------------------
+        //ACQUISITION PHASE
+    
     timeline.push(study_instructions);
-    timeline.push(set_cursor);
     for (let i = 0; i < studyPages.length; i++) {
       const pageNumber = i + 1;
-
+      timeline.push(set_cursor);
       timeline.push({
         type: jsPsychHtmlButtonResponse,
         stimulus: `
@@ -1080,8 +1009,8 @@
         trial_duration: (perPageDurationsMinutes[i] ?? totalStudyMinutes / studyPages.length) * 60 * 1000,
         extensions: [
           {
-            type: jsPsychExtensionNormalisedMouseTracking,
-            params: { targets: ["#mouse-target"] },
+            type: CompactMouseTracking,
+            params: { targets: ["#mouse-target", "#mouse-target img"] },
           },
         ],
         data: {
@@ -1089,7 +1018,14 @@
           page: pageNumber,
         },
       });
-
+      //Set Cursor back to default
+      timeline.push({
+        type: jsPsychCallFunction,
+        func: function () {
+          document.body.style.removeProperty("cursor");
+          document.documentElement.style.removeProperty("cursor");
+        },
+      });
       timeline.push({
         ...paas_scale,
         questions: paas_scale.questions.map((question) => ({
@@ -1103,13 +1039,8 @@
         },
       });
     }
-    timeline.push({
-      type: jsPsychCallFunction,
-      func: function () {
-        document.body.style.removeProperty("cursor");
-        document.documentElement.style.removeProperty("cursor");
-      },
-    });
+
+   
     timeline.push(me_instructions);
     //timeline.push(paas_scale);
     timeline.push(klepsch_ICL_scale);
@@ -1122,33 +1053,37 @@
     }
     //---------------------------------
     //TESTING PHASE
+    
     timeline.push(posttest_instructions);
+   
     buildTest("identificationTest", timeline);
     buildTest("terminologyTest", timeline);
     buildTest("comprehensionTest", timeline);
+   
     timeline.push(tech_issues);
-    timeline.push(save_to_datapipe);
-    timeline.push(experiment_over); //Saves to Firebase and redirects after
+    
+    timeline.push(experiment_over); // DataPipe saves before the completion redirect.
   }
 
-  //Run the Experiment WITHOUT DATAPIPE============================================================================
-  //jsPsych.run(timeline);
+  timeline.push({
+    type: jsPsychCallFunction,
+    data: { task: "experiment_end_metadata" },
+    func: function () {
+      return { experiment_end: new Date().toISOString() };
+    },
+  });
 
   //Run the Experiment through DataPipe ========================================================================
-
   async function createExperiment() {
     if (source == "datapipe") {
-      const pipeCondition = await jsPsychPipe.getCondition("6XhA4WBsXQNS");
+      const pipeCondition = await jsPsychPipe.getCondition("l4y7c2KXjvM6");
       if (pipeCondition == 0) {
-        //timeline = condition_1_timeline;
         condition = "Control";
       }
       if (pipeCondition == 1) {
-        //timeline = condition_2_timeline;
         condition = "Arrow Cursor";
       }
       if (pipeCondition == 2) {
-        //timeline = condition_2_timeline;
         condition = "Hand Cursor";
       }
       console.log(`Condition is ${condition} from ${source}.`);

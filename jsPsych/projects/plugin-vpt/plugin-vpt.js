@@ -391,6 +391,10 @@ var jsPsychVPT = (function (jspsych) {
       dellasala_score: trial.dellasala_score, // Grabs the score defined in the info const. Score is the highest number of correctly filled boxes in the most complex grid.
     };
 
+    if (trial.on_result) {
+      trial.on_result(trial_data);
+    }
+
     // clear the display
     display_element.innerHTML = "";
     // end trial
@@ -515,7 +519,7 @@ var jsPsychVPT = (function (jspsych) {
     name: "visual-pattern-task",
     description:
       "Visual Pattern Task for measure visuospatial working memory capacity based upon Della Salla et al., 1997.",
-    version: "1.0.0", // When working in a Javascript environment with no build, you will need to manually put set the version information. This is used for metadata purposes and publishing.
+    version: "1.0.1", // When working in a Javascript environment with no build, you will need to manually put set the version information. This is used for metadata purposes and publishing.
     parameters: {
       version: {
         type: jspsych.ParameterType.STRING,
@@ -534,6 +538,11 @@ var jsPsychVPT = (function (jspsych) {
         default: true,
         pretty_name: `Run the participant through 2 practice grids`,
         description: `This shows just 2 grids for the particicipant to try, it will make sure they get them both right before moving on to the fully trial.`,
+      },
+      on_result: {
+        type: jspsych.ParameterType.FUNCTION,
+        default: null,
+        description: "Receives the trial result before it is handed to jsPsych, including when record_data is false.",
       },
       stimulous_duration: {
         type: jspsych.ParameterType.INT,

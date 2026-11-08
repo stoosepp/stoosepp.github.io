@@ -37,9 +37,9 @@ Please consider whether you find these topics about online learning, heart funct
 If you are a BCU student, you can obtain up to 6 RPS credits for participating in this study.
 </p>
   <h3>DO I HAVE TO TAKE PART & CAN I WITHDRAW? </h3>
-    <p>In line with the regulations outlined by the British Psychological Society, participation is completely voluntary. You can skip any questions if you’d prefer not to answer, and can stop at any time during the study by closing your browser window. After completing the study, you can withdraw your data up until 15 Sept 2027 by emailing the researcher with your Unique ID code.</p>
+    <p>In line with the regulations outlined by the British Psychological Society, participation is completely voluntary. You can skip any questions if you'd prefer not to answer, and can stop at any time during the study by closing your browser window. After completing the study, you can withdraw your data up until 15 Sept 2027 by emailing the researcher with your Unique ID code.</p>
   <h3>HOW WILL MY DATA BE KEPT CONFIDENTIAL?</h3>
-    <p>Your responses will be completely anonymous and compliant with GDPR, Data Protection Act 2018, and University’s Data Protection Policy, and there will be no collection of any personal information other than your age, gender and learning discipline. Data will be stored securely on encrypted server at Monash University, and accessed only by Dr Stoo Sepp, but may be subjected to audit and verification processes.
+    <p>Your responses will be completely anonymous and compliant with GDPR, Data Protection Act 2018, and University's Data Protection Policy, and there will be no collection of any personal information other than your age, gender and learning discipline. Data will be stored securely on encrypted server at Monash University, and accessed only by Dr Stoo Sepp, but may be subjected to audit and verification processes.
 The data will be securely stored for 5 years, after which point it will be destroyed. 
 </p>
   <h3>SUPPORT SERVICES</h3>
@@ -70,7 +70,7 @@ Email: <a href="mailto:wellbeing@bcu.ac.uk">wellbeing@bcu.ac.uk</a>   <br/></p>
 `,
 
   pretest_instructions: `<p>Dear participant,</p>
-    <p>First, you’ll complete a brief quiz of 36 multiple-choice questions regarding the human nervous system to determine how much you know about the topic. The quiz consists of two parts: the first four questions assess your understanding of the background information, and the rest of the questions measure your pre-existing knowledge on the topics we will provide you with during this session. </p>
+    <p>First, you'll complete a brief quiz of 36 multiple-choice questions regarding the human nervous system to determine how much you know about the topic. The quiz consists of two parts: the first four questions assess your understanding of the background information, and the rest of the questions measure your pre-existing knowledge on the topics we will provide you with during this session. </p>
     <p>Please take your time and make sure you read every question carefully before you answer. Every question has four possible answers. Only one answer is correct, so please answer honestly.</p>
     <p>We thank you for your efforts! </p>
     <p>The quiz when you click the start button below. Good Luck! </p>
